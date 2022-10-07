@@ -7,4 +7,4 @@
 - В поле Repository URL указываем MeatInArmor/Late_Escape
 - В поле Local path - корневую папку нового проекта (из которой удалили папку Assets)
 - Скачиваем содержимое проекта с Git ВНУТРИ GitHUB Desctop
-Готово
+=Готово
