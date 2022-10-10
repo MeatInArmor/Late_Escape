@@ -18,7 +18,7 @@ namespace StarterAssets
     {
         [Header("Player")]
         [Tooltip("Скорость передвижения персонажа в м/с")]
-        public float MoveSpeed = 2.5f;
+        public float MoveSpeed = 2.0f;
 
         [Tooltip("Скорость бега персонажа в м/с (заменим на скорость передвижения в бою)")]
         public float SprintSpeed = 5.335f;
@@ -47,36 +47,20 @@ namespace StarterAssets
 
         [Tooltip("!!! Время, необходимое для перехода в состояние падения. Полезно для спуска по лестнице !!!")]
         public float FallTimeout = 0.15f;
-        // [Header("Player Приземлён")]
-        // [Tooltip("!!! Заземлен персонаж или нет. Не является частью встроенной проверки CharacterController !!!")]
-        // public bool Grounded = true;
 
-        // [Tooltip("!!! Полезно для неровной почвы !!")]
-        // public float GroundedOffset = -0.14f;
+        [Header("Player Приземлён")]
+        [Tooltip("!!! Заземлен персонаж или нет. Не является частью встроенной проверки CharacterController !!!")]
+        public bool Grounded = true;
 
-        // [Tooltip("!!! Радиус заземленной чеки. Должен соответствовать радиусу CharacterController !!!")]
-        // public float GroundedRadius = 0.28f;
+        [Tooltip("!!! Полезно для неровной почвы !!")]
+        public float GroundedOffset = -0.14f;
 
-        // [Tooltip("Какие слои персонаж использует в качестве земли")]
-        // public LayerMask GroundLayers;
+        [Tooltip("!!! Радиус заземленной чеки. Должен соответствовать радиусу CharacterController !!!")]
+        public float GroundedRadius = 0.28f;
 
+        [Tooltip("Какие слои персонаж использует в качестве земли")]
+        public LayerMask GroundLayers;
 
-///////////////////////////////////////////////////
-        [Tooltip("Время между атаками")]
-        public float AttackTimeout = 1.30f;
-
-        [Tooltip("Время до переключения режима уклонения")]
-        public float DodgeModeChangeTimeout = 4f;
-
-        [Tooltip("Время между активациями уклонения")]
-        public float DodgeTimeout = 4f;
-
-        [Tooltip("Время выполнения уклонения")]
-        public float DodgeingTimeout = 1f;
-
-        [Tooltip("Возможно ли уклониться сейчас")]
-        public bool CanDodge = true;
-///////////////////////////////////////////////////////////////////
         [Header("Cinemachine")]
         [Tooltip("Цель слежения, установленная в виртуальной камере Cinemachine, за которой будет следовать камера.")]
         public GameObject CinemachineCameraTarget;
@@ -103,23 +87,18 @@ namespace StarterAssets
         private float _targetRotation = 0.0f;
         private float _rotationVelocity;
         private float _verticalVelocity;
-        //private float _terminalVelocity = 53.0f;
+        private float _terminalVelocity = 53.0f;
 
         // timeout deltatime
         //private float _jumpTimeoutDelta;
-        //private float _fallTimeoutDelta;
-        private float _attackTimeoutDelta;
-        private float _dodgeTimeoutDelta;
-         private float _dodgeModeTimeoutDelta;
+        private float _fallTimeoutDelta;
 
         // animation IDs
         private int _animIDSpeed;
-       // private int _animIDGrounded;
-        private int _animIDJump;
-        //private int _animIDFreeFall;
+        private int _animIDGrounded;
+       // private int _animIDJump;
+        private int _animIDFreeFall;
         private int _animIDMotionSpeed;
-        private int _animIDAttack;
-        private int _animIDDodge;
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
@@ -171,17 +150,16 @@ namespace StarterAssets
             AssignAnimationIDs();
 
             // сбросить наши тайм-ауты при запуске
-
-            // _jumpTimeoutDelta = JumpTimeout;
-            // _fallTimeoutDelta = FallTimeout;
+           // _jumpTimeoutDelta = JumpTimeout;
+            _fallTimeoutDelta = FallTimeout;
         }
 
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
 
-            //JumpAndGravity();
-            //GroundedCheck();
+            JumpAndGravity();
+            GroundedCheck();
             Move();
         }
 
@@ -193,27 +171,26 @@ namespace StarterAssets
         private void AssignAnimationIDs()
         {
             _animIDSpeed = Animator.StringToHash("Speed");
-            //_animIDGrounded = Animator.StringToHash("Grounded");
-            //_animIDJump = Animator.StringToHash("Jump");
-            //_animIDFreeFall = Animator.StringToHash("FreeFall");
+            _animIDGrounded = Animator.StringToHash("Grounded");
+           // _animIDJump = Animator.StringToHash("Jump");
+            _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
-            _animIDAttack = Animator.StringToHash("Attack");
         }
 
-        // private void GroundedCheck()
-        // {
-        //     // установить положение сферы со смещением
-        //     Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
-        //         transform.position.z);
-        //     Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
-        //         QueryTriggerInteraction.Ignore);
+        private void GroundedCheck()
+        {
+            // установить положение сферы со смещением
+            Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
+                transform.position.z);
+            Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
+                QueryTriggerInteraction.Ignore);
 
-        //     // обновить аниматор, если используется персонаж
-        //     if (_hasAnimator)
-        //     {
-        //         _animator.SetBool(_animIDGrounded, Grounded);
-        //     }
-        // }
+            // обновить аниматор, если используется персонаж
+            if (_hasAnimator)
+            {
+                _animator.SetBool(_animIDGrounded, Grounded);
+            }
+        }
 
         private void CameraRotation()
         {
@@ -304,74 +281,74 @@ namespace StarterAssets
             }
         }
 
-        // private void JumpAndGravity()
-        // {
-        //     if (Grounded)
-        //     {
-        //         // сбросить таймер тайм-аута падения (опять же, у нас будет не прыжки)
-        //         _fallTimeoutDelta = FallTimeout;
+        private void JumpAndGravity()
+        {
+            if (Grounded)
+            {
+                // сбросить таймер тайм-аута падения (опять же, у нас будет не прыжки)
+                _fallTimeoutDelta = FallTimeout;
 
-        //         // обновить аниматор, если используется персонаж
-        //         if (_hasAnimator)
-        //         {
-        //             _animator.SetBool(_animIDJump, false);
-        //             _animator.SetBool(_animIDFreeFall, false);
-        //         }
+                // обновить аниматор, если используется персонаж
+                if (_hasAnimator)
+                {
+                    //_animator.SetBool(_animIDJump, false);
+                    _animator.SetBool(_animIDFreeFall, false);
+                }
 
-        //         // остановить бесконечное падение нашей скорости при заземлении 
-        //         if (_verticalVelocity < 0.0f)
-        //         {
-        //             _verticalVelocity = -2f;
-        //         }
+                // остановить бесконечное падение нашей скорости при заземлении 
+                if (_verticalVelocity < 0.0f)
+                {
+                    _verticalVelocity = -2f;
+                }
 
-        //         // Jump
-        //         if (_input.jump && _jumpTimeoutDelta <= 0.0f)
-        //         {
-        //             // квадратный корень из H * -2 * G = скорость, необходимая для достижения желаемой высоты
-        //             _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                // Jump
+                // if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+                // {
+                //     // квадратный корень из H * -2 * G = скорость, необходимая для достижения желаемой высоты
+                //     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 
-        //             // обновить аниматор, если используется персонаж
-        //             if (_hasAnimator)
-        //             {
-        //                 _animator.SetBool(_animIDJump, true);
-        //             }
-        //         }
+                //     // обновить аниматор, если используется персонаж
+                //     if (_hasAnimator)
+                //     {
+                //         _animator.SetBool(_animIDJump, true);
+                //     }
+                // }
 
-        //         // тайм-аут прыжка
-        //         if (_jumpTimeoutDelta >= 0.0f)
-        //         {
-        //             _jumpTimeoutDelta -= Time.deltaTime;
-        //         }
-        //     }
-        //     else
-        //     {
-        //         // сбросить таймер тайм-аута перехода
-        //         _jumpTimeoutDelta = JumpTimeout;
+                // тайм-аут прыжка
+                // if (_jumpTimeoutDelta >= 0.0f)
+                // {
+                //     _jumpTimeoutDelta -= Time.deltaTime;
+                // }
+            }
+            else
+            {
+                // сбросить таймер тайм-аута перехода
+                //_jumpTimeoutDelta = JumpTimeout;
 
-        //         // падение тайм-аут
-        //         if (_fallTimeoutDelta >= 0.0f)
-        //         {
-        //             _fallTimeoutDelta -= Time.deltaTime;
-        //         }
-        //         else
-        //         {
-        //             // обновить аниматор, если используется персонаж
-        //             if (_hasAnimator)
-        //             {
-        //                 _animator.SetBool(_animIDFreeFall, true);
-        //             }
-        //         }
+                // падение тайм-аут
+                if (_fallTimeoutDelta >= 0.0f)
+                {
+                    _fallTimeoutDelta -= Time.deltaTime;
+                }
+                else
+                {
+                    // обновить аниматор, если используется персонаж
+                    if (_hasAnimator)
+                    {
+                        _animator.SetBool(_animIDFreeFall, true);
+                    }
+                }
 
-        //         // !!! если мы не заземлены, не прыгайте !!!
-        //         _input.jump = false;
-        //     }
+                // !!! если мы не заземлены, не прыгайте !!!
+                //_input.jump = false;
+            }
 
-        //     // применять гравитацию с течением времени, если вы находитесь под терминалом (умножьте на дельта-время дважды, чтобы линейно ускорить с течением времени)
-        //     if (_verticalVelocity < _terminalVelocity)
-        //     {
-        //         _verticalVelocity += Gravity * Time.deltaTime;
-        //     }
-        // }
+            // применять гравитацию с течением времени, если вы находитесь под терминалом (умножьте на дельта-время дважды, чтобы линейно ускорить с течением времени)
+            if (_verticalVelocity < _terminalVelocity)
+            {
+                _verticalVelocity += Gravity * Time.deltaTime;
+            }
+        }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
@@ -380,19 +357,19 @@ namespace StarterAssets
             return Mathf.Clamp(lfAngle, lfMin, lfMax);
         }
 
-        // private void OnDrawGizmosSelected()
-        // {
-        //     Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
-        //     Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
+        private void OnDrawGizmosSelected()
+        {
+            Color transparentGreen = new Color(0.0f, 1.0f, 0.0f, 0.35f);
+            Color transparentRed = new Color(1.0f, 0.0f, 0.0f, 0.35f);
 
-        //     if (Grounded) Gizmos.color = transparentGreen;
-        //     else Gizmos.color = transparentRed;
+            if (Grounded) Gizmos.color = transparentGreen;
+            else Gizmos.color = transparentRed;
 
-        //     // когда выбрано, нарисуйте гизмо (штуковину?) в положении и соответствующем радиусе заземленного коллайдера
-        //     Gizmos.DrawSphere(
-        //         new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
-        //         GroundedRadius);
-        // }
+            // когда выбрано, нарисуйте гизмо (штуковину?) в положении и соответствующем радиусе заземленного коллайдера
+            Gizmos.DrawSphere(
+                new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z),
+                GroundedRadius);
+        }
 
         private void OnFootstep(AnimationEvent animationEvent)
         {
@@ -406,12 +383,12 @@ namespace StarterAssets
             }
         }
 
-        // private void OnLand(AnimationEvent animationEvent)
-        // {
-        //     if (animationEvent.animatorClipInfo.weight > 0.5f)
-        //     {
-        //         AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-        //     }
-        // }
+        private void OnLand(AnimationEvent animationEvent)
+        {
+            if (animationEvent.animatorClipInfo.weight > 0.5f)
+            {
+                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+            }
+        }
     }
 }
