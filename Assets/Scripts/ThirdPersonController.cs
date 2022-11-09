@@ -16,7 +16,7 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
-        [Header("Player")]
+        [Header("Movement")]
         [Tooltip("Скорость передвижения персонажа в м/с")]
         public float MoveSpeed = 2.0f;
 
@@ -30,36 +30,36 @@ namespace StarterAssets
         [Tooltip("Ускорение и замедление")]
         public float SpeedChangeRate = 10.0f;
 
-        public AudioClip LandingAudioClip;
-        public AudioClip[] FootstepAudioClips;
-        [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+        
 
         // [Space(10)]
         // [Tooltip("!!! Высота, на которую может прыгнуть игрок !!!")]
         // public float JumpHeight = 1.2f;
 
-        [Tooltip("Персонаж использует собственное значение гравитации. Двигатель по умолчанию -9.81f")]
+        [Tooltip("Персонаж использует собственное значение гравитации (Значение по умолчанию -9.81f)")]
         public float Gravity = -15.0f;
 
         // [Space(10)]
         // [Tooltip("Время, необходимое для того, чтобы снова прыгнуть. Установите 0f, чтобы снова мгновенно прыгнуть (используем, но не для прыжка)")]
         // public float JumpTimeout = 0.50f;
 
-        [Tooltip("!!! Время, необходимое для перехода в состояние падения. Полезно для спуска по лестнице !!!")]
+        [Tooltip("Время, необходимое для перехода в состояние падения. Полезно для спуска по лестнице")]
         public float FallTimeout = 0.15f;
 
-        [Header("Player Приземлён")]
-        [Tooltip("!!! Заземлен персонаж или нет. Не является частью встроенной проверки CharacterController !!!")]
+
+        [Header("Grounding")]
+        [Tooltip("Заземлен персонаж или нет. Не является частью встроенной проверки CharacterController")]
         public bool Grounded = true;
 
-        [Tooltip("!!! Полезно для неровной почвы !!")]
+        [Tooltip("Полезно для неровной почвы !!")]
         public float GroundedOffset = -0.14f;
 
-        [Tooltip("!!! Радиус заземленной чеки. Должен соответствовать радиусу CharacterController !!!")]
+        [Tooltip("Радиус заземленной чеки. Должен соответствовать радиусу CharacterController")]
         public float GroundedRadius = 0.28f;
 
         [Tooltip("Какие слои персонаж использует в качестве земли")]
         public LayerMask GroundLayers;
+
 
         [Header("Cinemachine")]
         [Tooltip("Цель слежения, установленная в виртуальной камере Cinemachine, за которой будет следовать камера.")]
@@ -74,14 +74,36 @@ namespace StarterAssets
         [Tooltip("Дополнительные градусы для переопределения камеры. Полезно для точной настройки положения камеры в заблокированном состоянии.")]
         public float CameraAngleOverride = 0.0f;
 
-        [Tooltip("Для фиксации положения камеры по всем осям")]
+        [Tooltip("!!! Для фиксации положения камеры по всем осям")]
         public bool LockCameraPosition = false;
+
+
+        [Header("Сharacteristics")]
+        [Tooltip("Максимальное здоровье")]
+        public int HealthMax = 100;
+
+        [Tooltip("Текущее здоровье")]
+        public int HealthCurrent = 100;
+
+        [Tooltip("Сила обычной атаки")]
+        public int NormalAttackStrength = 10;
+
+        [Tooltip("Магическая сила")]
+        public int MagicStrength = 10;
+
+
+        [Header("Sounds")]
+        [Tooltip("Звуки ходьбы")]
+        public AudioClip LandingAudioClip;
+        public AudioClip[] FootstepAudioClips;
+        [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+
 
         // cinemachine
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
 
-        // player
+        // player movement
         private float _speed;
         private float _animationBlend;
         private float _targetRotation = 0.0f;
@@ -92,8 +114,19 @@ namespace StarterAssets
         // timeout deltatime
         //private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
+        private float _stopMoveingTimeoutDelta;
+
+        private float _normalAttackTimeoutDelta;
+        private float _magicCastTimeoutDelta;
+
+        private float _dodgeTimeTimeoutDelta;
+        private float _dodgeReloadingTimeoutDelta;
+        private float _dodgeModeReloadingTimeoutDelta;
+
+
 
         // animation IDs
+        private int _animIDAttack;
         private int _animIDSpeed;
         private int _animIDGrounded;
        // private int _animIDJump;
@@ -157,10 +190,18 @@ namespace StarterAssets
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-
+            Attack();
             JumpAndGravity();
             GroundedCheck();
             Move();
+        }
+
+        private void Attack()
+        {
+            if(Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                _animator.SetTrigger("Attack");
+            }
         }
 
         private void LateUpdate()
@@ -170,6 +211,7 @@ namespace StarterAssets
 
         private void AssignAnimationIDs()
         {
+            _animIDAttack = Animator.StringToHash("Attack");
             _animIDSpeed = Animator.StringToHash("Speed");
             _animIDGrounded = Animator.StringToHash("Grounded");
            // _animIDJump = Animator.StringToHash("Jump");
