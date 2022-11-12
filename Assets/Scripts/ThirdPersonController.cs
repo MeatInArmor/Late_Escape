@@ -89,6 +89,7 @@ namespace StarterAssets
 
         [Tooltip("!!! Для фиксации положения камеры по всем осям")]
         public bool LockCameraPosition = false;
+        
 
 //личные параметры
         [Header("Сharacteristics")]
@@ -112,9 +113,14 @@ namespace StarterAssets
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
 ////////////
 
-        // cinemachine
+        // [Header("Other")]
+        // public float _targetSelectionRange = 30f;
+
+        // cinemachine and camera
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
+        // private Vector3 _mainCameraPosition;
+        // private Vector3 _mainCameraDirection;
 
         // player movement
         private float _speed;
@@ -215,25 +221,35 @@ namespace StarterAssets
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-            if(_normalAttackTimeoutDelta > 0)
-            {
-                _normalAttackTimeoutDelta -= Time.deltaTime;
-                Debug.Log(_normalAttackTimeoutDelta);
-            }
+
+
             Attack();
-            
+
             JumpAndGravity();
             GroundedCheck();
             Move();
+            //TrackingCamera();
         }
 
+        // private void TrackingCamera()
+        // {
+        //     _mainCameraPosition = _mainCamera.transform.position;
+        //     _mainCameraDirection = _mainCamera.transform.forward * _targetSelectionRange;
+        //     Debug.DrawLine(_mainCameraPosition, _mainCameraDirection, Color.red);
+
+        // }
         private void Attack()
         {
-            if(Input.GetKeyDown(KeyCode.Mouse0) && _normalAttackTimeoutDelta <= 0)
+            if(_normalAttackTimeoutDelta > 0)
             {
-                _animator.SetTrigger("Attack");
-                _normalAttackTimeoutDelta = _normalAttackTimeout;
+                _normalAttackTimeoutDelta -= Time.deltaTime;
             }
+            else
+                if(Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    _animator.SetTrigger("Attack");
+                    _normalAttackTimeoutDelta = _normalAttackTimeout;
+                }
         }
 
         private void LateUpdate()

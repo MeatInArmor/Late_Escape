@@ -21,6 +21,27 @@ namespace StarterAssets
 		public bool cursorInputForLook = true;
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
+
+		public void Update()
+		{
+			if(Input.GetKeyDown(KeyCode.Space))
+            {
+                cursorLocked = false;
+				Cursor.visible = true;
+				cursorInputForLook = false;
+				Cursor.lockState = CursorLockMode.None;
+				look = new Vector2(0,0);
+
+            }
+            if(Input.GetKeyUp(KeyCode.Space))
+            {
+                cursorLocked = true;
+				Cursor.visible = false;
+				cursorInputForLook = true;
+				Cursor.lockState = CursorLockMode.Locked;
+            }
+		}
+
 		public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
