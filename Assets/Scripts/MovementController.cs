@@ -14,7 +14,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
     [RequireComponent(typeof(PlayerInput))]
 #endif
-    public class ThirdPersonController : MonoBehaviour
+    public class MovementController : MonoBehaviour
     {
         [Header("Movement")]
         [Tooltip("Скорость передвижения персонажа в м/с")]
@@ -30,35 +30,14 @@ namespace StarterAssets
         [Tooltip("Ускорение и замедление")]
         public float SpeedChangeRate = 10.0f;
 
-        
-
-        // [Space(10)]
-        // [Tooltip("!!! Высота, на которую может прыгнуть игрок !!!")]
-        // public float JumpHeight = 1.2f;
 
         [Tooltip("Персонаж использует собственное значение гравитации (Значение по умолчанию -9.81f)")]
         public float Gravity = -15.0f;
 
-        // [Space(10)]
-        // [Tooltip("Время, необходимое для того, чтобы снова прыгнуть. Установите 0f, чтобы снова мгновенно прыгнуть (используем, но не для прыжка)")]
-        // public float JumpTimeout = 0.50f;
-
         [Header("Timeouts")]
         [Tooltip("Время, необходимое для перехода в состояние падения. Полезно для спуска по лестнице")]
         public float FallTimeout = 0.15f;
-//личные параметры
-        [Tooltip("Время выполнения обычной атаки")]
-        public float NormalAttackDuration = 2f;
 
-        [Tooltip("Время зарядки магии")]
-        public float MagicCastTimeDuration = 4f;
-
-        [Tooltip("Время неуязвимости от уклонения")]
-        public float DodgeDurationTime = 0.5f;
-
-        [Tooltip("Перезарядка уклонения")]
-        public float DodgeCalldownTime = 5f;
-///////////////
 
         [Header("Grounding")]
         [Tooltip("Заземлен персонаж или нет. Не является частью встроенной проверки CharacterController")]
@@ -90,27 +69,13 @@ namespace StarterAssets
         [Tooltip("!!! Для фиксации положения камеры по всем осям")]
         public bool LockCameraPosition = false;
 
-//личные параметры
-        [Header("Сharacteristics")]
-        [Tooltip("Максимальное здоровье")]
-        public int HealthMax = 100;
-
-        [Tooltip("Текущее здоровье")]
-        public int HealthCurrent = 100;
-
-        [Tooltip("Сила обычной атаки")]
-        public int NormalAttackStrength = 10;
-
-        [Tooltip("Магическая сила")]
-        public int MagicStrength = 20;
-
 
         [Header("Sounds")]
         [Tooltip("Звуки ходьбы")]
         public AudioClip LandingAudioClip;
         public AudioClip[] FootstepAudioClips;
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
-////////////
+
 
         // cinemachine
         private float _cinemachineTargetYaw;
@@ -124,28 +89,11 @@ namespace StarterAssets
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
 
-        // timeouts deltatime
-        //private float _jumpTimeoutDelta;
+        // timeout deltatime
         private float _fallTimeoutDelta;
         private float _stopMoveingTimeoutDelta; // прекращение движения во время атаки, уклонения и прочего
 
-        private float _normalAttackTimeoutDelta = 0f; // перезарядка обычной атаки
-        private float _magicCastTimeoutDelta; // перезарядка магии
-
-        private float _dodgeDurationTimeoutDelta; // оставшаяся длительность уклонения (неуязвимость)
-        private float _dodgeCastingTimeoutDelta; // время до конца возможности уклонения (нажатие кнопок)
-        private float _dodgeReloadingTimeoutDelta; // перезарядка уклонения
-        private float _dodgeModeReloadingTimeoutDelta; // перезарядка переключения режима уклонения
-
-        //timeouts
-        private float _normalAttackTimeout = 1.5f; // перезарядка обычной атаки
-        private float _magicCastTimeout; // перезарядка магии
-
-        private float _dodgeDurationTimeout; // оставшаяся длительность уклонения (неуязвимость)
-        private float _dodgeCastingTimeout; // время до конца возможности уклонения (нажатие кнопок)
-        private float _dodgeReloadingTimeout; // перезарядка уклонения
-        private float _dodgeModeReloadingTimeou; // перезарядка переключения режима уклонения
-
+       
         // animation IDs
         private int _animIDAttack;
         private int _animIDSpeed;
@@ -153,10 +101,6 @@ namespace StarterAssets
        // private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
-
-        //boolean
-        private bool _canMove;
-        //создать статический класс со статическими переменными
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
@@ -208,20 +152,13 @@ namespace StarterAssets
             AssignAnimationIDs();
 
             // сбросить наши тайм-ауты при запуске
-           // _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
         }
 
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-            if(_normalAttackTimeoutDelta > 0)
-            {
-                _normalAttackTimeoutDelta -= Time.deltaTime;
-                Debug.Log(_normalAttackTimeoutDelta);
-            }
             Attack();
-            
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -229,10 +166,10 @@ namespace StarterAssets
 
         private void Attack()
         {
-            if(Input.GetKeyDown(KeyCode.Mouse0) && _normalAttackTimeoutDelta <= 0)
+            Debug.Log(_animator.name);
+            if(Input.GetKeyDown(KeyCode.Mouse0) && _animator.name != "Attack")
             {
                 _animator.SetTrigger("Attack");
-                _normalAttackTimeoutDelta = _normalAttackTimeout;
             }
         }
 
