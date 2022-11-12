@@ -4,32 +4,48 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    Color OriginMatColor;
-    Color HighlightColor = new Color(0, 255, 0);
-    bool isClosed = true;
+    Marker marker;
+    Selection selection;
+    Enemy enemy;
+    //Color objectSelected = new Color(255, 0, 0, 255);
+    //Color objectNormal = new Color(255, 0, 0, 0);
+    bool isClosed = false;
 
     void Start()
     {
         // запоминаем оригинальные настройки материала объекта
-        OriginMatColor = this.GetComponent<Renderer>().material.color;
+        enemy = this.GetComponent<Enemy>();
+        marker = enemy.GetComponentInChildren<Marker>();
+        selection = enemy.GetComponentInChildren<Selection>();
+        marker.gameObject.SetActive(false);
+        selection.gameObject.SetActive(false);
+
+
+
+        //Debug.Log(marker);
+        //Debug.Log(selection);
     }
 
     void OnMouseOver()
     {
-        this.GetComponent<Renderer>().material.color = HighlightColor;
+        //marker.GetComponent<Renderer>().material.color = objectSelected;
+        marker.gameObject.SetActive(true);
     }
 
     void OnMouseExit()
     {
-        this.GetComponent<Renderer>().material.color = OriginMatColor;
+        //marker.GetComponent<Renderer>().material.color = objectNormal;
+        marker.gameObject.SetActive(false);
     }
 
     void OnMouseDown()
     {
         isClosed = !isClosed;
         if (isClosed)
-            this.transform.Translate(0, 4.2f, 0, Space.Self);
+            //selection.GetComponent<Renderer>().material.color = objectSelected;
+            selection.gameObject.SetActive(true);
         else
-            this.transform.Translate(0, -4.2f, 0, Space.Self);
+            //selection.GetComponent<Renderer>().material.color = objectNormal;
+            selection.gameObject.SetActive(false);
     } 
 }
