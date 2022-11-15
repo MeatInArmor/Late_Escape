@@ -40,6 +40,8 @@ namespace StarterAssets
 				cursorInputForLook = true;
 				Cursor.lockState = CursorLockMode.Locked;
             }
+
+
 		}
 
 		public void OnMove(InputValue value)
