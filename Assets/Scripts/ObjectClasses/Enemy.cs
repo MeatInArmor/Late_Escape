@@ -4,41 +4,35 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    Marker marker;
-    Selection selection;
-    Enemy enemy;
-    //Color objectSelected = new Color(255, 0, 0, 255);
-    //Color objectNormal = new Color(255, 0, 0, 0);
-    bool isClosed = false;
+    private Marker marker;
+    private Selection selection;
+    private Enemy enemy;
+    private bool isClosed = false;
 
-    void Start()
+    private void Start()
     {
-        // запоминаем оригинальные настройки материала объекта
         enemy = this.GetComponent<Enemy>();
         marker = enemy.GetComponentInChildren<Marker>();
         selection = enemy.GetComponentInChildren<Selection>();
         marker.gameObject.SetActive(false);
         selection.gameObject.SetActive(false);
-
-
-
         //Debug.Log(marker);
         //Debug.Log(selection);
     }
 
-    void OnMouseOver()
+    private void OnMouseOver()
     {
         //marker.GetComponent<Renderer>().material.color = objectSelected;
         marker.gameObject.SetActive(true);
     }
 
-    void OnMouseExit()
+    private void OnMouseExit()
     {
         //marker.GetComponent<Renderer>().material.color = objectNormal;
         marker.gameObject.SetActive(false);
     }
 
-    void OnMouseDown()
+    private void OnMouseDown()
     {
         isClosed = !isClosed;
         if (isClosed)

@@ -363,7 +363,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000061035156, y: -0.000030517578}
+  m_AnchoredPosition: {x: -0.000061035156, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &41035095
@@ -5257,7 +5257,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-29702
+  m_Name: pb_Mesh-4198
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -8263,7 +8263,7 @@ GameObject:
   - component: {fileID: 1216815436}
   - component: {fileID: 1216815435}
   m_Layer: 5
-  m_Name: PlayerInterfaceCanvas
+  m_Name: Canvas(PlayerInterface)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8318,7 +8318,7 @@ Canvas:
   m_GameObject: {fileID: 1216815434}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 1607475082}
   m_PlaneDistance: 1
   m_PixelPerfect: 0
@@ -8348,7 +8348,7 @@ RectTransform:
   - {fileID: 2036666833}
   - {fileID: 166594022}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -11546,7 +11546,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-29686
+  m_Name: pb_Mesh-4186
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -12646,7 +12646,7 @@ RectTransform:
   - {fileID: 183592261}
   - {fileID: 41035094}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -15748,7 +15748,7 @@ Transform:
   m_Children:
   - {fileID: 2070925443526839471}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2070925443526839464
 GameObject:
@@ -16638,6 +16638,7 @@ GameObject:
   - component: {fileID: 5885216829670671795}
   - component: {fileID: 135756641613574975}
   - component: {fileID: 4416926083347132239}
+  - component: {fileID: 6982812147933622148}
   m_Layer: 8
   m_Name: PlayerStructure
   m_TagString: Player
@@ -17004,7 +17005,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5684894836010697938, guid: 014aeaa48a0db4b4494595b5ac67df87, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5684894836010697938, guid: 014aeaa48a0db4b4494595b5ac67df87, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17143,7 +17144,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5944892904551157249
 Transform:
   m_ObjectHideFlags: 0
@@ -17309,7 +17310,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6416774289740347655, guid: a115a25692aecb74aa8295904de1287e, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6416774289740347655, guid: a115a25692aecb74aa8295904de1287e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17562,6 +17563,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &6982812147933622148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926083347132227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71f95040d5f193a4b9342602caa586be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterController:
+  - {fileID: 9100000, guid: 2b9c083fc2a6749469a26260c96b89a7, type: 2}
+  _characterModel:
+  - {fileID: 5021264095763930728, guid: 014aeaa48a0db4b4494595b5ac67df87, type: 3}
 --- !u!4 &6983258930626336602
 Transform:
   m_ObjectHideFlags: 0

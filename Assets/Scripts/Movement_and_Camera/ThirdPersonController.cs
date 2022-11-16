@@ -91,21 +91,6 @@ namespace StarterAssets
         public bool LockCameraPosition = false;
         
 
-//личные параметры
-        [Header("Сharacteristics")]
-        [Tooltip("Максимальное здоровье")]
-        public int HealthMax = 100;
-
-        [Tooltip("Текущее здоровье")]
-        public int HealthCurrent = 100;
-
-        [Tooltip("Сила обычной атаки")]
-        public int NormalAttackStrength = 10;
-
-        [Tooltip("Магическая сила")]
-        public int MagicStrength = 20;
-
-
         [Header("Sounds")]
         [Tooltip("Звуки ходьбы")]
         public AudioClip LandingAudioClip;
