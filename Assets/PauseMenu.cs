@@ -5,14 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
+    public static bool InOptionsMenu;
     public static bool GameIsPaused;
 
     public GameObject PauseMenuUI;
+    public GameObject OptionsMenuUI;
 
     public GameObject PauseButtonUI;
+    //public GameObject PlayerButtonsUI;
 
-    [Header("Mouse Cursor Settings")]
-    public bool cursorLocked = true;
+    public GameObject OptionsBackground;
+
     public bool cursorInputForLook = true;
 
     //public Camera Cam;
@@ -20,12 +23,12 @@ public class PauseMenu : MonoBehaviour
     void Start()
     {
         GameIsPaused = false;
-        
+        InOptionsMenu = false;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.BackQuote))
+        if (Input.GetKeyDown(KeyCode.BackQuote) && InOptionsMenu == false)
         {
             if (GameIsPaused)
             {
@@ -36,6 +39,7 @@ public class PauseMenu : MonoBehaviour
                 Pause();
             }
         }
+        else if (Input.GetKeyDown(KeyCode.BackQuote)) BackToMenu();
         cursorInputForLook = true;
     }
 
@@ -45,6 +49,7 @@ public class PauseMenu : MonoBehaviour
         PauseMenuUI.SetActive(false);
         PauseButtonUI.SetActive(true);
         Time.timeScale = 1f;
+        OptionsBackground.SetActive(false);
         GameIsPaused = false;
         cursorInputForLook = true;
     }
@@ -53,7 +58,6 @@ public class PauseMenu : MonoBehaviour
     {
         PauseMenuUI.SetActive(true);
         PauseButtonUI.SetActive(false);
-
         Time.timeScale = 0f;
         GameIsPaused = true;
     }
@@ -70,5 +74,19 @@ public class PauseMenu : MonoBehaviour
         Application.Quit();
     }
 
+    public void BackToMenu()
+    {
+        OptionsMenuUI.SetActive(false);
+        PauseMenuUI.SetActive(true);
+        OptionsBackground.SetActive(false);
+        Time.timeScale = 0f;
+        InOptionsMenu = false;
+    }
+
+    public void GoToOptionsMenu()
+    {
+        InOptionsMenu = true;
+        OptionsBackground.SetActive(true);
+    }
 
 }
