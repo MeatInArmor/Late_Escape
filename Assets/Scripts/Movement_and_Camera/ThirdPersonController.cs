@@ -120,7 +120,7 @@ namespace StarterAssets
         private float _fallTimeoutDelta;
         private float _stopMoveingTimeoutDelta; // прекращение движения во время атаки, уклонения и прочего
 
-        private float _normalAttackTimeoutDelta = 0f; // перезарядка обычной атаки
+        private float _normalAttackTimeoutDelta; // перезарядка обычной атаки
         private float _magicCastTimeoutDelta; // перезарядка магии
 
         private float _dodgeDurationTimeoutDelta; // оставшаяся длительность уклонения (неуязвимость)
@@ -129,13 +129,7 @@ namespace StarterAssets
         private float _dodgeModeReloadingTimeoutDelta; // перезарядка переключения режима уклонения
 
         //timeouts
-        private float _normalAttackTimeout = 1.5f; // перезарядка обычной атаки
-        private float _magicCastTimeout; // перезарядка магии
-
-        private float _dodgeDurationTimeout; // оставшаяся длительность уклонения (неуязвимость)
-        private float _dodgeCastingTimeout; // время до конца возможности уклонения (нажатие кнопок)
-        private float _dodgeReloadingTimeout; // перезарядка уклонения
-        private float _dodgeModeReloadingTimeou; // перезарядка переключения режима уклонения
+        
 
         // animation IDs
         private int _animIDAttack;
@@ -144,6 +138,7 @@ namespace StarterAssets
        // private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
+        private int _animIDCanMove;
 
         //boolean
         private bool _canMove;
@@ -201,40 +196,69 @@ namespace StarterAssets
             // сбросить наши тайм-ауты при запуске
            // _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+
+            _normalAttackTimeoutDelta = -1;
+            _magicCastTimeoutDelta = -1;
         }
 
         private void Update()
         {
             _hasAnimator = TryGetComponent(out _animator);
-
-
+            CanMoveCheck();
+            Move();
             Attack();
-
             JumpAndGravity();
             GroundedCheck();
-            Move();
-            //TrackingCamera();
+            //Debug.Log(_animationBlend);
         }
 
-        // private void TrackingCamera()
-        // {
-        //     _mainCameraPosition = _mainCamera.transform.position;
-        //     _mainCameraDirection = _mainCamera.transform.forward * _targetSelectionRange;
-        //     Debug.DrawLine(_mainCameraPosition, _mainCameraDirection, Color.red);
+        private void CanMoveCheck()
+        {
+            if(_normalAttackTimeoutDelta >= 0)
+            {
+                //Debug.Log(CharacterValues.canMove + " 1");
+                _normalAttackTimeoutDelta -= Time.deltaTime;
+                if(_normalAttackTimeoutDelta <= 0)
+                {
+                    //Debug.Log(CharacterValues.canMove + " 2");
+                    CanMoveChanger();   
+                }
+            }
+        }
 
-        // }
+        private void CanMoveChanger()
+        {
+            if(_normalAttackTimeoutDelta <= 0)
+            { 
+                CharacterValues.canMove = true;
+                _animator.SetBool(_animIDCanMove, true);               
+            }
+        }
+
         private void Attack()
         {
-            if(_normalAttackTimeoutDelta > 0)
+            if(Input.GetKeyDown(KeyCode.Mouse0) && CharacterValues.canMove)
             {
-                _normalAttackTimeoutDelta -= Time.deltaTime;
+                CharacterValues.canMove = false;
+                _animationBlend = 0;
+                _animator.SetFloat(_animIDSpeed, 0);
+                _animator.SetBool(_animIDCanMove, false);
+                _normalAttackTimeoutDelta = CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout;
+                //Debug.Log(CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout);
+                //Debug.Log(CharacterValues.currentTeamMember);
+                _animator.SetTrigger("Attack");
+
             }
-            else
-                if(Input.GetKeyDown(KeyCode.Mouse0))
-                {
-                    _animator.SetTrigger("Attack");
-                    _normalAttackTimeoutDelta = _normalAttackTimeout;
-                }
+            // if(_normalAttackTimeoutDelta > 0)
+            // {
+            //     _normalAttackTimeoutDelta -= Time.deltaTime;
+            // }
+            // else
+            //     if(Input.GetKeyDown(KeyCode.Mouse0))
+            //     {
+                    
+            //         _normalAttackTimeoutDelta = _normalAttackTimeout;
+            //     }
         }
 
         private void LateUpdate()
@@ -246,6 +270,7 @@ namespace StarterAssets
         {
             _animIDAttack = Animator.StringToHash("Attack");
             _animIDSpeed = Animator.StringToHash("Speed");
+            _animIDCanMove = Animator.StringToHash("CanMove");
             //_animIDGrounded = Animator.StringToHash("Grounded");
             //_animIDJump = Animator.StringToHash("Jump");
             //_animIDFreeFall = Animator.StringToHash("FreeFall");
@@ -289,7 +314,7 @@ namespace StarterAssets
         }
 
         private void Move()
-        {
+        { if(CharacterValues.canMove){
             // установить целевую скорость на основе скорости движения, скорости спринта и нажатия кнопки спринта
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
@@ -340,8 +365,6 @@ namespace StarterAssets
                 // повернуть лицом к направлению ввода относительно положения камеры
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
-
-
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
             // переместить игрока
@@ -355,6 +378,7 @@ namespace StarterAssets
                 _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
         }
+        }
 
         private void JumpAndGravity()
         {
@@ -364,11 +388,11 @@ namespace StarterAssets
                 //_fallTimeoutDelta = FallTimeout;
 
                 // обновить аниматор, если используется персонаж
-                if (_hasAnimator)
-                {
+                //if (_hasAnimator)
+                //{
                     //_animator.SetBool(_animIDJump, false);
                    // _animator.SetBool(_animIDFreeFall, false);
-                }
+                //}
 
                 // остановить бесконечное падение нашей скорости при заземлении 
                 if (_verticalVelocity < 0.0f)

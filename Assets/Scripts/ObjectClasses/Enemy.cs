@@ -24,13 +24,11 @@ public class Enemy : MonoBehaviour
 
     private void OnMouseOver()
     {
-        //marker.GetComponent<Renderer>().material.color = objectSelected;
         marker.gameObject.SetActive(true);
     }
 
     private void OnMouseExit()
-    {
-        //marker.GetComponent<Renderer>().material.color = objectNormal;
+    { 
         marker.gameObject.SetActive(false);
     }
 
