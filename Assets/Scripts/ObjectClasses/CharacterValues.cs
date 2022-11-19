@@ -6,27 +6,27 @@ using UnityEngine;
 
 public class CharacterValues : MonoBehaviour
 {
-	public AnimatorController[] _characterController;
+	public AnimatorController[] _characterController; 
     public GameObject[] _characterModel;
 
  // Структура персоанжей с характеристиками
     public static Character[] character = new Character[4]; // 0 - фермер; 1 - дочь; 2 - урядник; 3 - воин
     public struct Character
     {
-        //public int _currentLevel; //уровень персонажа
-        //public int _levelPoints;  //опыт персонажа для увеличения уровня
-        public int _maxHP; // максимальное здоровье
-        public int _currentHP; // текущее здоровье
-        //public int _maxStamina; // максимальная выносливость
-        //public int _currentStamina; // текущая выносливость
-        //public int _maxMana; // максимальная мана
-        //public int _currentMana; //текущая мана
-        public float _magicDammageMultiplier; // множитель урона магии (пока что от обычного урона)
-        //public float _chargeAttackDammageMultiplier; // множитель урона сильной атаки
-        public int _damage; // урон (средний)
-        public int _deffence; // блокируемый урон (в единицах)
-        public bool _isDefeated; // персонаж побеждён
-        public float _moveSpeedMultiplier; //множитель скорости передвижения
+        //public int currentLevel; //уровень персонажа
+        //public int levelPoints;  //опыт персонажа для увеличения уровня
+        public int maxHP; // максимальное здоровье
+        public int currentHP; // текущее здоровье
+        //public int maxStamina; // максимальная выносливость
+        //public int currentStamina; // текущая выносливость
+        //public int maxMana; // максимальная мана
+        //public int currentMana; //текущая мана
+        public int damage; // урон (средний)
+        public float magicDammage; // множитель урона магии (пока что от обычного урона)
+        //public float chargeAttackDammageMultiplier; // множитель урона сильной атаки
+        public int deffence; // блокируемый урон (в единицах)
+        public bool isDefeated; // персонаж побеждён
+        public float moveSpeedMultiplier; //множитель скорости передвижения
     }  
 
     // игровые аспекты
@@ -58,17 +58,12 @@ private void Awake()
     teamMemberChangeCDDeltaTime = 0;
     inFightMode = false;
 
-    CharacterValues.character[0]._maxHP = 40;
-    CharacterValues.character[0]._currentHP = 40;
-    CharacterValues.character[0]._magicDammageMultiplier = 1.4f;
-    CharacterValues.character[0]._damage = 8;
-    CharacterValues.character[0]._deffence = 2;
-    CharacterValues.character[0]._isDefeated = false;
-    CharacterValues.character[0]._moveSpeedMultiplier = 1;
-
-
-
-    Debug.Log(CharacterValues.character[0]._maxHP);
-
+    CharacterValues.character[0].maxHP = 40;
+    CharacterValues.character[0].currentHP = 40;
+    CharacterValues.character[0].damage = 8;
+    CharacterValues.character[0].magicDammage = 12;    
+    CharacterValues.character[0].deffence = 2;
+    CharacterValues.character[0].isDefeated = false;
+    CharacterValues.character[0].moveSpeedMultiplier = 1;
 }
 }

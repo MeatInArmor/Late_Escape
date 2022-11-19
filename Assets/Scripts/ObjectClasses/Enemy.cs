@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private Marker marker;
-    private Selection selection;
-    private Enemy enemy;
-    private bool isClosed = false;
+    public static Enemy enemy; // Объект - враг
+
+    private Marker marker; // объект - выделение при наведении
+    private Selection selection; // объект - выделение цели атаки
+    private Selection currentTarget; // текущая цель атаки
+    //private bool isClosed = false;
 
     private void Start()
     {
@@ -34,12 +36,28 @@ public class Enemy : MonoBehaviour
 
     private void OnMouseDown()
     {
-        isClosed = !isClosed;
-        if (isClosed)
-            //selection.GetComponent<Renderer>().material.color = objectSelected;
+        enemy = this.GetComponent<Enemy>();
+        //Debug.Log(enemy);
+        //Debug.Log(selection);
+        //Debug.Log(currentTarget);
+        //Debug.Log(CharacterValues.enemyCurrentTarget);
+        if(CharacterValues.enemyCurrentTarget == null)
+        {
             selection.gameObject.SetActive(true);
+            CharacterValues.enemyCurrentTarget = enemy;
+            currentTarget = selection;
+            //Debug.Log(currentTarget);
+            //Debug.Log(CharacterValues.enemyCurrentTarget);
+        }
         else
-            //selection.GetComponent<Renderer>().material.color = objectNormal;
-            selection.gameObject.SetActive(false);
+        {
+            currentTarget = CharacterValues.enemyCurrentTarget.GetComponentInChildren<Selection>();
+            currentTarget.gameObject.SetActive(false); 
+            CharacterValues.enemyCurrentTarget = this.GetComponent<Enemy>();
+            selection.gameObject.SetActive(true);
+            currentTarget = selection;
+            //Debug.Log(currentTarget);
+            //Debug.Log(CharacterValues.enemyCurrentTarget);
+        }
     } 
 }
