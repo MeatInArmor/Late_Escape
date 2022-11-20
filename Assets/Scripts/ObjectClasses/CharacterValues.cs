@@ -50,7 +50,6 @@ public class CharacterValues : MonoBehaviour
     public static int teamMembers;                                      // всего членов команды в текущий момент
     public static int currentTeamMember;                                // номер текущего члена отряда
     public static float teamMemberChangeCD;                             // время перезарядки смены персонажа
-    public static float teamMemberChangeCDDeltaTime;                    // время до следующей смены персонажа
     public static bool inFightMode;                                     // находится ли персонаж в состоянии боя
     
     // Взаимодействия со врагами
@@ -64,16 +63,16 @@ public class CharacterValues : MonoBehaviour
 
 
     private void Awake()
-    {  
-        canMove = true;
-        isCameraRotationBlocked = false;
+    {   // установка значений
+        canMove = true;                             // ходить можно
+        isCameraRotationBlocked = false;            // глазеть по сторонам можно
 
-        teamMembers = 1;
-        currentTeamMember = 0;
-        teamMemberChangeCD = 5;
-        teamMemberChangeCDDeltaTime = 0;
-        inFightMode = false;
+        teamMembers = 1;                            // доступно персонажей на дамнный момент
+        currentTeamMember = 0;                      // текущий персонаж (пока что временный, пото будет девушка, потом заменим на фермера)
+        //teamMemberChangeCD = 5;                   // кд смены персонажа
+        //inFightMode = false;                      // потом сделаем отдельно режим в бою и режим вне боя
 
+        // настраиваем характеристики отдельно для каждого персонажа
         character[0].maxHP = 40;
         character[0].currentHP = 40;
         character[0].damage = 8;
@@ -81,7 +80,7 @@ public class CharacterValues : MonoBehaviour
         character[0].deffence = 2;
         character[0].isDefeated = false;
         character[0].moveSpeedMultiplier = 1;
-        character[0].attackDistance = 4;
+        character[0].attackDistance = 3;
 
         character[0].normalAttackTimeout = 1.5f;
         character[0].magicCastTimeout = 3;
@@ -98,16 +97,6 @@ public class CharacterValues : MonoBehaviour
 
 
     }
-
-    // public static bool DistanceChecker()
-    // { Debug.Log(enemyCurrentTarget.transform.position + " " + transform.position);
-    //     //distance = Vector3.Distance(enemyCurrentTarget.transform.position, transform.position);
-    //     if(distance <= CharacterValues.character[currentTeamMember].attackDistance)
-    //         return true;
-    //     else 
-    //         return false;
-
-    // }
 
 }
 

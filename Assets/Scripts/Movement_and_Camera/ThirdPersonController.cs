@@ -32,33 +32,14 @@ namespace StarterAssets
 
         
 
-        // [Space(10)]
-        // [Tooltip("!!! Высота, на которую может прыгнуть игрок !!!")]
-        // public float JumpHeight = 1.2f;
-
         [Tooltip("Персонаж использует собственное значение гравитации (Значение по умолчанию -9.81f)")]
         public float Gravity = -15.0f;
 
-        // [Space(10)]
-        // [Tooltip("Время, необходимое для того, чтобы снова прыгнуть. Установите 0f, чтобы снова мгновенно прыгнуть (используем, но не для прыжка)")]
-        // public float JumpTimeout = 0.50f;
 
         [Header("Timeouts")]
         [Tooltip("Время, необходимое для перехода в состояние падения. Полезно для спуска по лестнице")]
         public float FallTimeout = 0.15f;
-//личные параметры
-        [Tooltip("Время выполнения обычной атаки")]
-        public float NormalAttackDuration = 2f;
 
-        [Tooltip("Время зарядки магии")]
-        public float MagicCastTimeDuration = 4f;
-
-        [Tooltip("Время неуязвимости от уклонения")]
-        public float DodgeDurationTime = 0.5f;
-
-        [Tooltip("Перезарядка уклонения")]
-        public float DodgeCalldownTime = 5f;
-///////////////
 
         [Header("Grounding")]
         [Tooltip("Заземлен персонаж или нет. Не является частью встроенной проверки CharacterController")]
@@ -96,77 +77,67 @@ namespace StarterAssets
         public AudioClip LandingAudioClip;
         public AudioClip[] FootstepAudioClips;
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
-////////////
-
-        // [Header("Other")]
-        // public float _targetSelectionRange = 30f;
 
         // cinemachine and camera
-        private float _cinemachineTargetYaw;
-        private float _cinemachineTargetPitch;
-        // private Vector3 _mainCameraPosition;
-        // private Vector3 _mainCameraDirection;
+        private float _cinemachineTargetYaw;                    // отвечает за x координату поворота камеры 
+        private float _cinemachineTargetPitch;                  // отвечает за x координату поворота камеры 
 
         // player movement
-        private float _speed;
-        private float _animationBlend;
-        private float _targetRotation = 0.0f;
-        private float _rotationVelocity;
-        private float _verticalVelocity;
-        private float _terminalVelocity = 53.0f;
+        private float _speed;                                   // скорость
+        private float _animationBlend;                          // вроде скорость изменения скорости (великий и могучий Русский язык)
+        private float _targetRotation = 0.0f;                   // хз что это
+        private float _rotationVelocity;                        //
+        private float _verticalVelocity;                        // скорости по вертикали, горизонтали и Z
+        private float _terminalVelocity = 53.0f;                //
 
         // timeouts deltatime
         //private float _jumpTimeoutDelta;
-        private float _fallTimeoutDelta;
-        private float _stopMoveingTimeoutDelta; // прекращение движения во время атаки, уклонения и прочего
+        private float _fallTimeoutDelta;                        // время падения (пока не удаляем)
 
-        private float _normalAttackTimeoutDelta; // перезарядка обычной атаки
-        private float _magicCastTimeoutDelta; // перезарядка магии
+        private float _normalAttackTimeoutDelta;                // перезарядка обычной атаки
+        //private float _magicCastTimeoutDelta;                   // перезарядка магии
 
-        private float _dodgeDurationTimeoutDelta; // оставшаяся длительность уклонения (неуязвимость)
-        private float _dodgeCastingTimeoutDelta; // время до конца возможности уклонения (нажатие кнопок)
-        private float _dodgeReloadingTimeoutDelta; // перезарядка уклонения
-        private float _dodgeModeReloadingTimeoutDelta; // перезарядка переключения режима уклонения
+        //private float _dodgeDurationTimeoutDelta;               // оставшаяся длительность уклонения (неуязвимость)
+        //private float _dodgeCastingTimeoutDelta;                // время до конца возможности уклонения (нажатие кнопок)
+        //private float _dodgeReloadingTimeoutDelta;              // перезарядка уклонения
+        //private float _dodgeModeReloadingTimeoutDelta;          // перезарядка переключения режима уклонения
 
-        //timeouts
-        
+        //timeouts 
 
-        // animation IDs
-        private int _animIDAttack;
+        // animation IDs (установка переменных внутри аниматора)
+        private int _animIDAttack;                          
         private int _animIDSpeed;
         private int _animIDGrounded;
-       // private int _animIDJump;
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
         private int _animIDCanMove;
 
         //boolean
-        private bool _canMove;
+        private bool _canMove;                                  // если true, двигаться можно
         //создать статический класс со статическими переменными
 
-        private float distance;
+        private float distance;                                 // расстояние между игроком и целью
 
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-        private PlayerInput _playerInput;
-#endif
-        private Animator _animator;
-        private CharacterController _controller;
-        private StarterAssetsInputs _input;
-        private GameObject _mainCamera;
+        #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
+        private PlayerInput _playerInput;                       // сама система движения
+        #endif
+        private Animator _animator;                             // аниматор
+        private CharacterController _controller;                // контроллер в аниматоре
+        private StarterAssetsInputs _input;                     // настройки нажатия кнопок в PlayerInput
+        private GameObject _mainCamera;                         // камера
+        private const float _threshold = 0.01f;                 // время до начала поворота камеры при движении мыши?
+        private bool _hasAnimator;                              // есть аниматор или нет
 
-        private const float _threshold = 0.01f;
-
-        private bool _hasAnimator;
-
-        private bool IsCurrentDeviceMouse
+        // проверка управляется ли мышью
+        private bool IsCurrentDeviceMouse                       
         {
             get
             {
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
+        #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
                 return _playerInput.currentControlScheme == "KeyboardMouse";
-#else
+        #else
 				return false;
-#endif
+        #endif
             }
         }
 
@@ -184,11 +155,11 @@ namespace StarterAssets
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
-            _hasAnimator = TryGetComponent(out _animator);
-            _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
+            _hasAnimator = TryGetComponent(out _animator);              // если на объекте есть аниматор, то _hasAnimator = true, _animator = этот самый аниматор
+            _controller = GetComponent<CharacterController>();          // на объекте ищется и берётся класс CharacterController
+            _input = GetComponent<StarterAssetsInputs>();               // на объекте ищется и берётся класс StarterAssetsInputs
             #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-                _playerInput = GetComponent<PlayerInput>();
+                _playerInput = GetComponent<PlayerInput>();             // на объекте ищется и берётся класс PlayerInput
             #else
 			    Debug.LogError( "В пакете Starter Assets отсутствуют зависимости. Пожалуйста, используйте Tools/Starter Assets/Reinstall Dependencies, чтобы исправить это.");
             #endif
@@ -196,16 +167,12 @@ namespace StarterAssets
             AssignAnimationIDs();
 
             // сбросить наши тайм-ауты при запуске
-           // _jumpTimeoutDelta = JumpTimeout;
-            _fallTimeoutDelta = FallTimeout;
-
-            //_normalAttackTimeoutDelta = -1;
-            //_magicCastTimeoutDelta = -1;
+            _fallTimeoutDelta = FallTimeout;                            // время падения
         }
 
         private void Update()
         {
-            _hasAnimator = TryGetComponent(out _animator);
+            _hasAnimator = TryGetComponent(out _animator);              // снова проверяем наличиа аниматора, мбо значения сбросились (наверное)
             CanMoveCheck();
             Move();
             Attack();
@@ -217,14 +184,14 @@ namespace StarterAssets
         {
             CameraRotation();
         }
-
+        // изменяет возможность перезвигаться. Передвигаться нельзя во время атаки, магии, уклонения и прочего
         private void CanMoveCheck()
         {
-            if(_normalAttackTimeoutDelta >= 0)
+            if(_normalAttackTimeoutDelta >= 0)                      // проверка, что атака ещё не закончена
             {
                 //Debug.Log(CharacterValues.canMove + " 1");
-                _normalAttackTimeoutDelta -= Time.deltaTime;
-                if(_normalAttackTimeoutDelta <= 0)
+                _normalAttackTimeoutDelta -= Time.deltaTime;        // уменьшение оставшегося времени атаки (отнимается разница во времени с прошлой проверки)
+                if(_normalAttackTimeoutDelta <= 0)                  // если атака завершилась
                 {
                     //Debug.Log(CharacterValues.canMove + " 2");
                     CanMoveChanger();   
@@ -234,107 +201,106 @@ namespace StarterAssets
 
         private void CanMoveChanger()
         {
-            if(_normalAttackTimeoutDelta <= 0)
+            if(_normalAttackTimeoutDelta <= 0)                      // если конкретно атакака завершилась (потом добавится конкретно магия и прочее)
             { 
-                CharacterValues.canMove = true;
-                _animator.SetBool(_animIDCanMove, true);               
+                CharacterValues.canMove = true;                     // разрешаем двигаться
+                _animator.SetBool(_animIDCanMove, true);            // переключаем анимацию в аниматоре, изменяя значение преременной там
             }
         }
 
         private void Attack()
         {
-            if(Input.GetKeyDown(KeyCode.Mouse0) && CharacterValues.canMove)
+            if(Input.GetKeyDown(KeyCode.Mouse0) && CharacterValues.canMove)     // если нажата ЛКМ и персонаж может двигаться
             {
-                CharacterValues.canMove = false;
-                _animationBlend = 0;
-                _animator.SetFloat(_animIDSpeed, 0);
-                _animator.SetBool(_animIDCanMove, false);
-                _normalAttackTimeoutDelta = CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout;
+                CharacterValues.canMove = false;                                // то он больше не может двигаться
+                _animationBlend = 0;                                            // зануляем скорость изменение скорости движения 
+                _animator.SetFloat(_animIDSpeed, 0);                            // зануляем саму скорость в аниматоре
+                _animator.SetBool(_animIDCanMove, false);                       // запрещаем ходить в аниматоре
+                _normalAttackTimeoutDelta = CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout;   // ставим длительность атаки равной КД атаки выбранного персонажа
                 //Debug.Log(CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout);
                 //Debug.Log(CharacterValues.currentTeamMember);
-                _animator.SetTrigger("Attack");
+                _animator.SetTrigger("Attack");                                 // включаем анимацию атаки
                 //Debug.Log(CharacterValues.enemyCurrentTarget);
-                if(CharacterValues.enemyCurrentTarget != null)
-                    if(DistanceChecker())
+                if(CharacterValues.enemyCurrentTarget != null)                  // если цель выбрана (ссылка не на null, а на Enemy)
+                    if(DistanceChecker())                                       // проверка находится ли выбранный враг в радиусе атаки
                     {   
-                        float time = CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout / 1.5f;
-                        Invoke("Hitting", time);
+                        // надо добавить поворот в сторону врага
+                        float time = CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout / 1.5f; // задержка перед непосредственно нанесением урона
+                        Invoke("Hitting", time);                                // отложенное исполнение функции Hitting
                     }
             }
         }
+        // Нанесение урона
         public void Hitting()
-        {  Enemy enemy = CharacterValues.enemyCurrentTarget;
-           enemy.currentHP -= CharacterValues.character[CharacterValues.currentTeamMember].damage;
-           if(enemy.currentHP <= 0)
-            Destroy(enemy.gameObject);
-           Debug.Log(enemy.currentHP);
-           Debug.Log(CharacterValues.enemyCurrentTarget);
+        {   
+            Enemy enemy = CharacterValues.enemyCurrentTarget;                    // берём выбранного врага
+            // надо усложнить рандомизацией урона и защитой врага
+            enemy.currentHP -= CharacterValues.character[CharacterValues.currentTeamMember].damage;  // отнимаем его хп в количестве урона атаки 
+            if(enemy.currentHP <= 0)                                             // если хп закончилось
+            // надо будет добавить анимацию смерти перед уничтожением
+            Destroy(enemy.gameObject);                                           // уничтожаем врага
+            Debug.Log(enemy.currentHP);
+            //Debug.Log(CharacterValues.enemyCurrentTarget);
         }
         public bool DistanceChecker()
         {   
             
-            distance = Vector3.Distance(CharacterValues.enemyCurrentTarget.transform.position, transform.position);
-            Debug.Log(distance);
-            if(distance <= CharacterValues.character[CharacterValues.currentTeamMember].attackDistance)
+            distance = Vector3.Distance(CharacterValues.enemyCurrentTarget.transform.position, transform.position); // расстояние от игрока до выбранного врага
+            //Debug.Log(distance);
+            if(distance <= CharacterValues.character[CharacterValues.currentTeamMember].attackDistance)             // если враг в радиусе атаки
                 return true;
             else 
                 return false;
 
         }
-
-
-        
-
+  
+        // просто засовываем переменные из аниматора в переменные этого скрипта
         private void AssignAnimationIDs()
         {
             _animIDAttack = Animator.StringToHash("Attack");
             _animIDSpeed = Animator.StringToHash("Speed");
             _animIDCanMove = Animator.StringToHash("CanMove");
-            //_animIDGrounded = Animator.StringToHash("Grounded");
-            //_animIDJump = Animator.StringToHash("Jump");
-            //_animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         }
+////////////////////////////////////////////////////////////
+// всё что ниже можно не читать, оно было встроенно в ассет
 
-        private void GroundedCheck()
+
+        private void GroundedCheck()            // зх, возможно корректное приземление на землю
         {
             // установить положение сферы со смещением
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
                 transform.position.z);
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
-
-            // обновить аниматор, если используется персонаж
-            if (_hasAnimator)
-            {
-             //   _animator.SetBool(_animIDGrounded, Grounded);
-            }
         }
 
         private void CameraRotation()
         {
-            // если есть вход и положение камеры не фиксировано
+            // если двигаеися мышка и положение камеры не фиксировано
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
-                //Не умножайте ввод с помощью мыши на Time.deltaTime;
+                //Ввод с помощью мыши не умножается на Time.deltaTime; (вроде если этого не делать, то на мощных компах значение будет в разы больше)
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;           // изменение направление вида камеры по X и Y
+                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;         
             }
 
-            //зафиксируйте наши вращения, чтобы наши значения были ограничены на 360 градусов
+            //фиксация значений вращения камеры, чтобы наши они были ограничены 360 градусам
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
             _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
-            // Cinemachine будет следовать этой цели
+            // Cinemachine будет следовать этой цели (кинемашина это модификация обычной камеры)
             CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
                 _cinemachineTargetYaw, 0.0f);
         }
 
         private void Move()
-        { if(CharacterValues.canMove){
-            // установить целевую скорость на основе скорости движения, скорости спринта и нажатия кнопки спринта
+        { 
+            if(CharacterValues.canMove)                                                 // если двигаться можно (это уже наша доработка)
+            {
+            // установка целевую скорость на основе скорости движения, скорости спринта и нажатия кнопки спринта
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
             // упрощенное ускорение и замедление, разработанное таким образом, чтобы его можно было легко удалить, заменить или повторить
@@ -343,11 +309,11 @@ namespace StarterAssets
              // если нет ввода, устанавливаем целевую скорость на 0
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
-            // ссылка на текущую горизонтальную скорость игроков
+            // ссылка на текущую горизонтальную скорость игрока
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
-            float speedOffset = 0.1f;
-            float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
+            float speedOffset = 0.1f;                                                   // множитель изменения скорости?
+            float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;  // из той же оперы
 
             // ускоряться или замедляться до заданной скорости
             if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -358,7 +324,7 @@ namespace StarterAssets
                 _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
                     Time.deltaTime * SpeedChangeRate);
 
-                // скорость округления до 3 знаков после запятой
+                // скорость округляется до 3 знаков после запятой
                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
             }
             else
@@ -366,12 +332,12 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);       // скорость изменения скорости
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-            // нормализовать направление ввода
+            // нормализация направления ввода
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
-
+/////////////////// дальше лень переводить
             // примечание: оператор Vector2 != использует аппроксимацию, поэтому не подвержен ошибкам с плавающей запятой и дешевле, чем величина
              // если есть ход, поверните игрока, когда игрок движется
             if (_input.move != Vector2.zero)
@@ -403,64 +369,12 @@ namespace StarterAssets
         {
             if (Grounded)
             {
-                // сбросить таймер тайм-аута падения (опять же, у нас будет не прыжки)
-                //_fallTimeoutDelta = FallTimeout;
-
-                // обновить аниматор, если используется персонаж
-                //if (_hasAnimator)
-                //{
-                    //_animator.SetBool(_animIDJump, false);
-                   // _animator.SetBool(_animIDFreeFall, false);
-                //}
-
                 // остановить бесконечное падение нашей скорости при заземлении 
                 if (_verticalVelocity < 0.0f)
                 {
                     _verticalVelocity = -2f;
                 }
-
-                // Jump
-                // if (_input.jump && _jumpTimeoutDelta <= 0.0f)
-                // {
-                //     // квадратный корень из H * -2 * G = скорость, необходимая для достижения желаемой высоты
-                //     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-
-                //     // обновить аниматор, если используется персонаж
-                //     if (_hasAnimator)
-                //     {
-                //         _animator.SetBool(_animIDJump, true);
-                //     }
-                // }
-
-                // тайм-аут прыжка
-                // if (_jumpTimeoutDelta >= 0.0f)
-                // {
-                //     _jumpTimeoutDelta -= Time.deltaTime;
-                // }
             }
-            else
-            {
-                // сбросить таймер тайм-аута перехода
-                //_jumpTimeoutDelta = JumpTimeout;
-
-                // падение тайм-аут
-                // if (_fallTimeoutDelta >= 0.0f)
-                // {
-                //     _fallTimeoutDelta -= Time.deltaTime;
-                // }
-                // else
-                // {
-                //     // обновить аниматор, если используется персонаж
-                //     if (_hasAnimator)
-                //     {
-                //         _animator.SetBool(_animIDFreeFall, true);
-                //     }
-                // }
-
-                // !!! если мы не заземлены, не прыгайте !!!
-                //_input.jump = false;
-            }
-
             // применять гравитацию с течением времени, если вы находитесь под терминалом (умножьте на дельта-время дважды, чтобы линейно ускорить с течением времени)
             if (_verticalVelocity < _terminalVelocity)
             {
