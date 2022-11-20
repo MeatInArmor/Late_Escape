@@ -8,6 +8,7 @@ public class CharacterValues : MonoBehaviour
 {
 	public AnimatorController[] _characterController; 
     public GameObject[] _characterModel;
+    
 
  // Структура персоанжей с характеристиками
     public static Character[] character = new Character[4]; // 0 - фермер; 1 - дочь; 2 - урядник; 3 - воин
@@ -23,7 +24,7 @@ public class CharacterValues : MonoBehaviour
         //public int maxMana;                                           // максимальная мана
         //public int currentMana;                                       // текущая мана
         public int damage;                                              // урон (средний)
-        public float magicDammage;                                      // множитель урона магии (пока что от обычного урона)
+        public float magicDammage;                                      // магический урон
         //public float chargeAttackDammageMultiplier;                   // множитель урона сильной атаки
         public int deffence;                                            // блокируемый урон (в единицах)
         public float attackDistance;                                    // дальность атаки
@@ -43,7 +44,7 @@ public class CharacterValues : MonoBehaviour
 
     // игровые аспекты
     public static bool canMove;                                         // становится false во время атаки, сильной атаки, магии, переключения персонажа, поражения 
-    public static bool isCameraRotationBlocked;                         // остановка поворота камеры при движении мышью при true
+    public  bool isCameraRotationBlocked;                         // остановка поворота камеры при движении мышью при true
 
     // общие сведения команды
     public static int teamMembers;                                      // всего членов команды в текущий момент
@@ -59,26 +60,55 @@ public class CharacterValues : MonoBehaviour
     //public static GameObject enemyCurrentTarget;
     public static float distanceToEnemyCurrentTarget;                   //дистанция до цели атаки
 
-private void Awake()
-{
-    canMove = true;
-    isCameraRotationBlocked = false;
+    public float distance = 0;
 
-    teamMembers = 1;
-    currentTeamMember = 0;
-    teamMemberChangeCD = 5;
-    teamMemberChangeCDDeltaTime = 0;
-    inFightMode = false;
 
-    CharacterValues.character[0].maxHP = 40;
-    CharacterValues.character[0].currentHP = 40;
-    CharacterValues.character[0].damage = 8;
-    CharacterValues.character[0].magicDammage = 12;    
-    CharacterValues.character[0].deffence = 2;
-    CharacterValues.character[0].isDefeated = false;
-    CharacterValues.character[0].moveSpeedMultiplier = 1;
+    private void Awake()
+    {  
+        canMove = true;
+        isCameraRotationBlocked = false;
 
-    CharacterValues.character[0].normalAttackTimeout = 1.5f;
-    CharacterValues.character[0].magicCastTimeout = 3;
+        teamMembers = 1;
+        currentTeamMember = 0;
+        teamMemberChangeCD = 5;
+        teamMemberChangeCDDeltaTime = 0;
+        inFightMode = false;
+
+        character[0].maxHP = 40;
+        character[0].currentHP = 40;
+        character[0].damage = 8;
+        character[0].magicDammage = 12;    
+        character[0].deffence = 2;
+        character[0].isDefeated = false;
+        character[0].moveSpeedMultiplier = 1;
+        character[0].attackDistance = 4;
+
+        character[0].normalAttackTimeout = 1.5f;
+        character[0].magicCastTimeout = 3;
+
+        // Debug.Log(character[0].maxHP);
+        // Debug.Log(character[0].currentHP);
+        // Debug.Log(character[0].damage);
+        // Debug.Log(character[0].magicDammage);
+        // Debug.Log(character[0].deffence);
+        // Debug.Log(character[0].isDefeated);
+        // Debug.Log(character[0].moveSpeedMultiplier);
+        // Debug.Log(character[0].magicCastTimeout);
+        
+
+
+    }
+
+    // public static bool DistanceChecker()
+    // { Debug.Log(enemyCurrentTarget.transform.position + " " + transform.position);
+    //     //distance = Vector3.Distance(enemyCurrentTarget.transform.position, transform.position);
+    //     if(distance <= CharacterValues.character[currentTeamMember].attackDistance)
+    //         return true;
+    //     else 
+    //         return false;
+
+    // }
+
 }
-}
+
+   

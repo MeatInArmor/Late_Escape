@@ -5247,7 +5247,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 784
+  m_VersionIndex: 787
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5798,8 +5798,9 @@ GameObject:
   - component: {fileID: 1730756024759164584}
   - component: {fileID: 8764978134330426500}
   - component: {fileID: 3138367103043025649}
+  - component: {fileID: 8793317959933726563}
   m_Layer: 0
-  m_Name: Farmer(without cigar) 1
+  m_Name: DevilFarmer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5871,6 +5872,18 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &8793317959933726563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5021264095763930728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a3354250bb69284eb3ed230c20b808f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5074277335110221107
 GameObject:
   m_ObjectHideFlags: 0
@@ -9841,7 +9854,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 787
+  m_VersionIndex: 790
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []

@@ -3,28 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
-{
-    public static Enemy enemy; // Объект - враг
+{   ////
+    // характеристики врага
+    public int maxHP;                                                // максимальное здоровье
+    public int currentHP;                                            // текущее здоровье       
+    public int damage;                                               // урон (средний)
+    public float magicDammage;                                       // магический урон      
+    public int deffence;                                             // блокируемый урон (в единицах)
+    public float attackDistance;                                     // дальность атаки
+    public bool isDefeated;                                          // персонаж побеждён
+    public float moveSpeedMultiplier;                                // множитель скорости передвижения
 
-    private Marker marker; // объект - выделение при наведении
-    private Selection selection; // объект - выделение цели атаки
-    private Selection currentTarget; // текущая цель атаки
-    //private bool isClosed = false;
+    //время выполнения способностей
+    public  float normalAttackTimeout;                                // перезарядка обычной атаки
+    public  float magicCastTimeout;                                   // перезарядка магии
+    ////
 
-    private void Start()
+    public  Enemy enemy;                                              // Объект - враг
+    private Marker marker;                                                  // объект - выделение при наведении
+    private Selection selection;                                            // объект - выделение цели атаки
+    private Selection currentTarget;                                        // для текущей цели атаки
+
+    private void Awake()
     {
+        //Выполняется для каждого враго по отдельности
         enemy = this.GetComponent<Enemy>();
         marker = enemy.GetComponentInChildren<Marker>();
         selection = enemy.GetComponentInChildren<Selection>();
         marker.gameObject.SetActive(false);
         selection.gameObject.SetActive(false);
-        //Debug.Log(marker);
-        //Debug.Log(selection);
+        SetCharacteristics();
+    }
+    private void Update()
+    {
+        
+
     }
 
+    private void SetCharacteristics()
+    {   
+        // установка характеристик при появлении
+        if(gameObject.GetComponent<DevilFarmer>())                          // если враг - красный фермер
+        {
+            maxHP = 10;
+            currentHP = 10; 
+        }
+    }
     private void OnMouseOver()
     {
         marker.gameObject.SetActive(true);
+        if(Input.GetMouseButtonDown(1))
+            RightClick();
     }
 
     private void OnMouseExit()
@@ -32,20 +61,14 @@ public class Enemy : MonoBehaviour
         marker.gameObject.SetActive(false);
     }
 
-    private void OnMouseDown()
+    private void RightClick()
     {
         enemy = this.GetComponent<Enemy>();
-        //Debug.Log(enemy);
-        //Debug.Log(selection);
-        //Debug.Log(currentTarget);
-        //Debug.Log(CharacterValues.enemyCurrentTarget);
         if(CharacterValues.enemyCurrentTarget == null)
         {
             selection.gameObject.SetActive(true);
             CharacterValues.enemyCurrentTarget = enemy;
             currentTarget = selection;
-            //Debug.Log(currentTarget);
-            //Debug.Log(CharacterValues.enemyCurrentTarget);
         }
         else
         {
@@ -54,8 +77,6 @@ public class Enemy : MonoBehaviour
             CharacterValues.enemyCurrentTarget = this.GetComponent<Enemy>();
             selection.gameObject.SetActive(true);
             currentTarget = selection;
-            //Debug.Log(currentTarget);
-            //Debug.Log(CharacterValues.enemyCurrentTarget);
         }
     } 
 }

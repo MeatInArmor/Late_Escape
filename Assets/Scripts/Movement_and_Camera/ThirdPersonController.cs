@@ -144,6 +144,8 @@ namespace StarterAssets
         private bool _canMove;
         //создать статический класс со статическими переменными
 
+        private float distance;
+
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
 #endif
@@ -185,11 +187,11 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
-            _playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "В пакете Starter Assets отсутствуют зависимости. Пожалуйста, используйте Tools/Starter Assets/Reinstall Dependencies, чтобы исправить это.");
-#endif
+            #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
+                _playerInput = GetComponent<PlayerInput>();
+            #else
+			    Debug.LogError( "В пакете Starter Assets отсутствуют зависимости. Пожалуйста, используйте Tools/Starter Assets/Reinstall Dependencies, чтобы исправить это.");
+            #endif
 
             AssignAnimationIDs();
 
@@ -197,8 +199,8 @@ namespace StarterAssets
            // _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
 
-            _normalAttackTimeoutDelta = -1;
-            _magicCastTimeoutDelta = -1;
+            //_normalAttackTimeoutDelta = -1;
+            //_magicCastTimeoutDelta = -1;
         }
 
         private void Update()
@@ -210,6 +212,10 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             //Debug.Log(_animationBlend);
+        }
+        private void LateUpdate()
+        {
+            CameraRotation();
         }
 
         private void CanMoveCheck()
@@ -247,24 +253,37 @@ namespace StarterAssets
                 //Debug.Log(CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout);
                 //Debug.Log(CharacterValues.currentTeamMember);
                 _animator.SetTrigger("Attack");
-
+                //Debug.Log(CharacterValues.enemyCurrentTarget);
+                if(CharacterValues.enemyCurrentTarget != null)
+                    if(DistanceChecker())
+                    {   
+                        float time = CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout / 1.5f;
+                        Invoke("Hitting", time);
+                    }
             }
-            // if(_normalAttackTimeoutDelta > 0)
-            // {
-            //     _normalAttackTimeoutDelta -= Time.deltaTime;
-            // }
-            // else
-            //     if(Input.GetKeyDown(KeyCode.Mouse0))
-            //     {
-                    
-            //         _normalAttackTimeoutDelta = _normalAttackTimeout;
-            //     }
+        }
+        public void Hitting()
+        {  Enemy enemy = CharacterValues.enemyCurrentTarget;
+           enemy.currentHP -= CharacterValues.character[CharacterValues.currentTeamMember].damage;
+           if(enemy.currentHP <= 0)
+            Destroy(enemy.gameObject);
+           Debug.Log(enemy.currentHP);
+           Debug.Log(CharacterValues.enemyCurrentTarget);
+        }
+        public bool DistanceChecker()
+        {   
+            
+            distance = Vector3.Distance(CharacterValues.enemyCurrentTarget.transform.position, transform.position);
+            Debug.Log(distance);
+            if(distance <= CharacterValues.character[CharacterValues.currentTeamMember].attackDistance)
+                return true;
+            else 
+                return false;
+
         }
 
-        private void LateUpdate()
-        {
-            CameraRotation();
-        }
+
+        
 
         private void AssignAnimationIDs()
         {
