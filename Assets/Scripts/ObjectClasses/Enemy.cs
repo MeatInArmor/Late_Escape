@@ -17,21 +17,28 @@ public class Enemy : MonoBehaviour
     //время выполнения способностей
     public  float normalAttackTimeout;                                  // перезарядка обычной атаки
     public  float magicCastTimeout;                                     // перезарядка магии
+    public  float deadTimeout;                                          // время до уничтожения после поражения
     ////
 
     public  Enemy enemy;                                                // Объект - враг
     private Marker marker;                                              // объект - выделение при наведении
     private Selection selection;                                        // объект - выделение цели атаки
     private Selection currentTarget;                                    // для текущей цели атаки (selection выбранный в данный момент)
+    public Animator animator;
 
     private void Awake()
     {
+         
         //Выполняется для каждого враго по отдельности
         enemy = this.GetComponent<Enemy>();                             // запихиваем нашего врага впеременную
         marker = enemy.GetComponentInChildren<Marker>();                // круг наводки мышью
         selection = enemy.GetComponentInChildren<Selection>();          // круг выбора цели
+
+        animator = this.GetComponent<Animator>();
+
         marker.gameObject.SetActive(false);                             // 
         selection.gameObject.SetActive(false);                          // делаем эти две штуки неактивными
+        //AssignAnimationIDs();
         SetCharacteristics();
     }
 
@@ -43,6 +50,7 @@ public class Enemy : MonoBehaviour
         {
             maxHP = 10;
             currentHP = 10; 
+            deadTimeout = 5;
             // сюда добавлять остальные характеристики
         }
     }
@@ -74,4 +82,20 @@ public class Enemy : MonoBehaviour
             selection.gameObject.SetActive(true);                                                   // сделать активным круг выбора врага
         }
     } 
+    // private void AssignAnimationIDs()
+    //     {
+    //         _animIDAttack = Animator.StringToHash("Attack");
+    //         _animIDSpeed = Animator.StringToHash("Speed");
+    //         _animIDCanMove = Animator.StringToHash("CanMove");
+    //         _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+    //     }
+        public void Dead()
+        {
+            animator.SetTrigger("Defeated"); 
+            Invoke("Destroy", deadTimeout);  
+        }
+        public void Destroy()
+        {
+            Destroy(enemy.gameObject);
+        }
 }

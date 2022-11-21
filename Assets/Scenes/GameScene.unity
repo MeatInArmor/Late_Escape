@@ -3396,7 +3396,7 @@ PrefabInstance:
       objectReference: {fileID: 1513320463}
     - target: {fileID: 6326977756852982230, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_VersionIndex
-      value: 853
+      value: 856
       objectReference: {fileID: 0}
     - target: {fileID: 8689544559070336414, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_Mesh
@@ -3404,7 +3404,7 @@ PrefabInstance:
       objectReference: {fileID: 627085088}
     - target: {fileID: 8689544559070336414, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_VersionIndex
-      value: 853
+      value: 856
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
@@ -3740,7 +3740,7 @@ PrefabInstance:
       objectReference: {fileID: 1030041397}
     - target: {fileID: 6326977756852982230, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_VersionIndex
-      value: 853
+      value: 856
       objectReference: {fileID: 0}
     - target: {fileID: 8689544559070336414, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_Mesh
@@ -3748,7 +3748,7 @@ PrefabInstance:
       objectReference: {fileID: 450875503}
     - target: {fileID: 8689544559070336414, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_VersionIndex
-      value: 853
+      value: 856
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
@@ -5504,7 +5504,7 @@ PrefabInstance:
       objectReference: {fileID: 1874537711}
     - target: {fileID: 6326977756852982230, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_VersionIndex
-      value: 856
+      value: 859
       objectReference: {fileID: 0}
     - target: {fileID: 8689544559070336414, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_Mesh
@@ -5512,7 +5512,7 @@ PrefabInstance:
       objectReference: {fileID: 1654429924}
     - target: {fileID: 8689544559070336414, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_VersionIndex
-      value: 856
+      value: 859
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
@@ -11431,7 +11431,7 @@ PrefabInstance:
       objectReference: {fileID: 917105986}
     - target: {fileID: 6326977756852982230, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_VersionIndex
-      value: 856
+      value: 859
       objectReference: {fileID: 0}
     - target: {fileID: 8689544559070336414, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_Mesh
@@ -11439,7 +11439,7 @@ PrefabInstance:
       objectReference: {fileID: 1020292757}
     - target: {fileID: 8689544559070336414, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: m_VersionIndex
-      value: 856
+      value: 859
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
@@ -18534,10 +18534,6 @@ MonoBehaviour:
   SpeedChangeRate: 10
   Gravity: -2
   FallTimeout: 0.15
-  NormalAttackDuration: 2
-  MagicCastTimeDuration: 4
-  DodgeDurationTime: 0.5
-  DodgeCalldownTime: 5
   Grounded: 1
   GroundedOffset: -0.14
   GroundedRadius: 0.28

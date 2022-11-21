@@ -38,6 +38,8 @@ public class CharacterValues : MonoBehaviour
         //public float dodgeCastingTimeout;                             // время до конца возможности уклонения (нажатие кнопок)
         //public float dodgeReloadingTimeout;                           // перезарядка уклонения
         //public float dodgeModeReloadingTimeou;                        // перезарядка переключения режима уклонения
+        public  float deadTimeout;                                      // время до уничтожения после поражения
+
        
 
     }  
@@ -84,6 +86,7 @@ public class CharacterValues : MonoBehaviour
 
         character[0].normalAttackTimeout = 1.5f;
         character[0].magicCastTimeout = 3;
+        character[0].deadTimeout = 5;
 
         // Debug.Log(character[0].maxHP);
         // Debug.Log(character[0].currentHP);

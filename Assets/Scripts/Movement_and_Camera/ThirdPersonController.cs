@@ -111,6 +111,7 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
         private int _animIDCanMove;
+        private int _animIDDefeated;
 
         //boolean
         private bool _canMove;                                  // если true, двигаться можно
@@ -238,7 +239,8 @@ namespace StarterAssets
             enemy.currentHP -= CharacterValues.character[CharacterValues.currentTeamMember].damage;  // отнимаем его хп в количестве урона атаки 
             if(enemy.currentHP <= 0)                                             // если хп закончилось
             // надо будет добавить анимацию смерти перед уничтожением
-            Destroy(enemy.gameObject);                                           // уничтожаем врага
+            enemy.Dead();
+            //Destroy(enemy.gameObject);                                           // уничтожаем врага
             Debug.Log(enemy.currentHP);
             //Debug.Log(CharacterValues.enemyCurrentTarget);
         }
@@ -261,6 +263,8 @@ namespace StarterAssets
             _animIDSpeed = Animator.StringToHash("Speed");
             _animIDCanMove = Animator.StringToHash("CanMove");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+            _animIDDefeated = Animator.StringToHash("Defeated");
+            
         }
 ////////////////////////////////////////////////////////////
 // всё что ниже можно не читать, оно было встроенно в ассет
