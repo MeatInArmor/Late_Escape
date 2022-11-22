@@ -79,7 +79,7 @@ public class CharacterValues : MonoBehaviour
         character[0].magicDammage = 12;    
         character[0].deffence = 2;
         character[0].isDefeated = false;
-        character[0].moveSpeedMultiplier = 1;
+           //character[0].moveSpeedMultiplier = 1;
         character[0].attackDistance = 3;
         //character[0].moveSpeed = 2.0f;        // потом будем использовать вместо таких же переменных в ThirdPersonController
         //character[0].moveSpeed = 5.335f;      //

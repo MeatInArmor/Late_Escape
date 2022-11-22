@@ -6,13 +6,13 @@ public class LockCursor : MonoBehaviour
 {
 
 	[Header("Mouse Cursor Settings")]
-	public bool cursorLocked = true;
+	//public bool cursorLocked = true;
 	public bool cursorInputForLook = true;
 
 	// Start is called before the first frame update
 	void Start()
     {
-        Screen.lockCursor = false;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     void Update()
@@ -22,19 +22,18 @@ public class LockCursor : MonoBehaviour
 			cursorInputForLook = true;
 			if (Input.GetKey(KeyCode.Space))
 			{
-				Screen.lockCursor = false;
+				Cursor.lockState = CursorLockMode.None;
 
 			}
 			else
 			{
-				Screen.lockCursor = true;
+				Cursor.lockState = CursorLockMode.Locked;
 			}
 		}
 		else
 		{
-			Screen.lockCursor = false;
+			Cursor.lockState = CursorLockMode.None;
 			cursorInputForLook = false;
 		}
 	}
-
 }

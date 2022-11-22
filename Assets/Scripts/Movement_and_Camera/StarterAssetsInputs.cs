@@ -31,7 +31,6 @@ namespace StarterAssets
 				cursorInputForLook = false;
 				Cursor.lockState = CursorLockMode.None;
 				look = new Vector2(0,0);
-
             }
             if(Input.GetKeyUp(KeyCode.Space))
             {
@@ -40,8 +39,7 @@ namespace StarterAssets
 				cursorInputForLook = true;
 				Cursor.lockState = CursorLockMode.Locked;
             }
-
-
+			
 		}
 
 		public void OnMove(InputValue value)

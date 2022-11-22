@@ -16,7 +16,7 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject OptionsBackground;
 
-    public bool cursorInputForLook = true;
+    public bool cursorInputForLook;
 
     //public Camera Cam;
 
@@ -28,6 +28,12 @@ public class PauseMenu : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0f)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
         if (Input.GetKeyDown(KeyCode.BackQuote) && InOptionsMenu == false)
         {
             if (GameIsPaused)
@@ -40,26 +46,28 @@ public class PauseMenu : MonoBehaviour
             }
         }
         else if (Input.GetKeyDown(KeyCode.BackQuote)) BackToMenu();
-        cursorInputForLook = true;
     }
 
 
     public void Resume()
     {
+        Time.timeScale = 1f;
         PauseMenuUI.SetActive(false);
         PauseButtonUI.SetActive(true);
-        Time.timeScale = 1f;
         OptionsBackground.SetActive(false);
         GameIsPaused = false;
-        cursorInputForLook = true;
+        Cursor.visible = false;
+
     }
 
     public void Pause()
     {
+        Time.timeScale = 0f;
         PauseMenuUI.SetActive(true);
         PauseButtonUI.SetActive(false);
-        Time.timeScale = 0f;
         GameIsPaused = true;
+        Cursor.visible = true;
+
     }
 
     public void LoadMenu()
