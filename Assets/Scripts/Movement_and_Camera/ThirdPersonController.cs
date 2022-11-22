@@ -18,10 +18,10 @@ namespace StarterAssets
     {
         [Header("Movement")]
         [Tooltip("Скорость передвижения персонажа в м/с")]
-        public float MoveSpeed = 2.0f;
+        public float MoveSpeed = 2.0f;                              // потом заменим на переменную из CharacterValues
 
         [Tooltip("Скорость бега персонажа в м/с (заменим на скорость передвижения в бою)")]
-        public float SprintSpeed = 5.335f;
+        public float SprintSpeed = 5.335f;                          // потом заменим на переменную из CharacterValues
 
         [Tooltip("Как быстро персонаж поворачивается лицом в направлении движения")]
         [Range(0.0f, 0.3f)]
@@ -92,9 +92,9 @@ namespace StarterAssets
 
         // timeouts deltatime
         //private float _jumpTimeoutDelta;
-        private float _fallTimeoutDelta;                        // время падения (пока не удаляем)
+        private float _fallTimeoutDelta;                          // время падения (пока не удаляем)
 
-        private float _normalAttackTimeoutDelta;                // перезарядка обычной атаки
+        private float _normalAttackTimeoutDelta;                  // перезарядка обычной атаки
         //private float _magicCastTimeoutDelta;                   // перезарядка магии
 
         //private float _dodgeDurationTimeoutDelta;               // оставшаяся длительность уклонения (неуязвимость)
@@ -126,7 +126,7 @@ namespace StarterAssets
         private CharacterController _controller;                // контроллер в аниматоре
         private StarterAssetsInputs _input;                     // настройки нажатия кнопок в PlayerInput
         private GameObject _mainCamera;                         // камера
-        private const float _threshold = 0.01f;                 // время до начала поворота камеры при движении мыши?
+        private const float _threshold = 0.01f;                 // время до начала поворота камеры при движении мышью?
         private bool _hasAnimator;                              // есть аниматор или нет
 
         // проверка управляется ли мышью
