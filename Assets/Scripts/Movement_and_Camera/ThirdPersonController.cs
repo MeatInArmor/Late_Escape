@@ -227,6 +227,7 @@ namespace StarterAssets
                     {   
                         // надо добавить поворот в сторону врага
                         float time = CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout / 1.5f; // задержка перед непосредственно нанесением урона
+                        Debug.Log(time);
                         Invoke("Hitting", time);                                // отложенное исполнение функции Hitting
                     }
             }

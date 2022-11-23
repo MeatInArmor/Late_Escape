@@ -34,11 +34,11 @@ public class CharacterValues : MonoBehaviour
 
         //время выполнения способностей
         public float normalAttackTimeout;                               // перезарядка обычной атаки
-        public float magicCastTimeout;                                  // перезарядка магии
+        //public float magicCastTimeout;                                  // перезарядка магии
         //public float dodgeDurationTimeout;                            // длительность уклонения (неуязвимость)
         //public float dodgeCastingTimeout;                             // время до конца возможности уклонения (нажатие кнопок)
         //public float dodgeReloadingTimeout;                           // перезарядка уклонения
-        //public float dodgeModeReloadingTimeou;                        // перезарядка переключения режимов уклонения
+        //public float dodgeModeReloadingTimeout;                        // перезарядка переключения режимов уклонения
         public  float deadTimeout;                                      // время до смены персонажа после поражения (или проигрыша, если их не осталось)
 
        
@@ -46,7 +46,7 @@ public class CharacterValues : MonoBehaviour
     }  
 
     // игровые аспекты
-    public static bool canMove;                                         // становится false во время атаки, сильной атаки, магии, переключения персонажа, поражения 
+    public static bool canMove;                                        // становится false во время атаки, сильной атаки, магии, переключения персонажа, поражения 
     public bool isCameraRotationBlocked;                               // остановка поворота камеры при движении мышью при true
 
     // общие сведения команды
@@ -79,13 +79,11 @@ public class CharacterValues : MonoBehaviour
         character[0].magicDammage = 12;    
         character[0].deffence = 2;
         character[0].isDefeated = false;
-           //character[0].moveSpeedMultiplier = 1;
         character[0].attackDistance = 3;
         //character[0].moveSpeed = 2.0f;        // потом будем использовать вместо таких же переменных в ThirdPersonController
         //character[0].moveSpeed = 5.335f;      //
 
         character[0].normalAttackTimeout = 1.5f;
-        character[0].magicCastTimeout = 3;
         character[0].deadTimeout = 5;
 
         // Debug.Log(character[0].maxHP);

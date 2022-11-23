@@ -12,15 +12,20 @@ public class Enemy : MonoBehaviour
     public int deffence;                                                // блокируемый урон (в единицах)
     public float attackDistance;                                        // дальность атаки
     public bool isDefeated;                                             // персонаж побеждён
-    public float moveSpeedMultiplier;                                   // множитель скорости передвижения
+    public float moveSpeed;                                             // множитель скорости передвижения
+    public float moveDistance;                                          // до каких пор нужно двигаться к персонажу
+    public float fieldOfVision;                                         // область нахождения персонажа
+    public float angleVision;
+
+
 
     //время выполнения способностей
-    public  float normalAttackTimeout;                                  // перезарядка обычной атаки
-    public  float magicCastTimeout;                                     // перезарядка магии
-    public  float deadTimeout;                                          // время до уничтожения после поражения
+    public float normalAttackTimeout;                                  // перезарядка обычной атаки
+    public float magicCastTimeout;                                     // перезарядка магии
+    public float deadTimeout;                                          // время до уничтожения после поражения
     ////
 
-    public  Enemy enemy;                                                // Объект - враг
+    public Enemy enemy;                                                // Объект - враг
     private Marker marker;                                              // объект - выделение при наведении
     private Selection selection;                                        // объект - выделение цели атаки
     private Selection currentTarget;                                    // для текущей цели атаки (selection выбранный в данный момент)
@@ -51,6 +56,7 @@ public class Enemy : MonoBehaviour
             maxHP = 10;
             currentHP = 10; 
             deadTimeout = 5;
+
             // сюда добавлять остальные характеристики
         }
     }
