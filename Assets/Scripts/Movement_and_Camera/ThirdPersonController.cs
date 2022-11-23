@@ -115,6 +115,7 @@ namespace StarterAssets
 
         //boolean
         private bool _canMove;                                  // если true, двигаться можно
+        private Vector3 direction;
         //создать статический класс со статическими переменными
 
         private float distance;                                 // расстояние между игроком и целью
@@ -188,8 +189,11 @@ namespace StarterAssets
         // изменяет возможность перезвигаться. Передвигаться нельзя во время атаки, магии, уклонения и прочего
         private void CanMoveCheck()
         {
-            if(_normalAttackTimeoutDelta >= 0)                      // проверка, что атака ещё не закончена
-            {
+            if(_normalAttackTimeoutDelta > 0)                      // проверка, что атака ещё не закончена
+            {                    
+                direction = CharacterValues.enemyCurrentTarget.transform.position - transform.position;
+                Quaternion _rotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * CharacterValues.character[CharacterValues.currentTeamMember].rotationSpeed);
                 //Debug.Log(CharacterValues.canMove + " 1");
                 _normalAttackTimeoutDelta -= Time.deltaTime;        // уменьшение оставшегося времени атаки (отнимается разница во времени с прошлой проверки)
                 if(_normalAttackTimeoutDelta <= 0)                  // если атака завершилась
@@ -225,9 +229,10 @@ namespace StarterAssets
                 if(CharacterValues.enemyCurrentTarget != null)                  // если цель выбрана (ссылка не на null, а на Enemy)
                     if(DistanceChecker())                                       // проверка находится ли выбранный враг в радиусе атаки
                     {   
+
                         // надо добавить поворот в сторону врага
                         float time = CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout / 1.5f; // задержка перед непосредственно нанесением урона
-                        Debug.Log(time);
+                        //Debug.Log(time);
                         Invoke("Hitting", time);                                // отложенное исполнение функции Hitting
                     }
             }

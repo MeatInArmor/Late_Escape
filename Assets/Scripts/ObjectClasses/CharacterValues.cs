@@ -31,6 +31,7 @@ public class CharacterValues : MonoBehaviour
         public bool isDefeated;                                         // персонаж побеждён
         public float moveSpeed;                                         // скорость ходьбы   // потом изменим на скорость передвижения в бою / вне боя
         public float sprintSpeed;                                       // скорость бега     //
+        public float rotationSpeed;                                     // скорость поворота
 
         //время выполнения способностей
         public float normalAttackTimeout;                               // перезарядка обычной атаки
@@ -81,7 +82,8 @@ public class CharacterValues : MonoBehaviour
         character[0].isDefeated = false;
         character[0].attackDistance = 3;
         //character[0].moveSpeed = 2.0f;        // потом будем использовать вместо таких же переменных в ThirdPersonController
-        //character[0].moveSpeed = 5.335f;      //
+        //character[0].sprintSpeed = 5.335f;      //
+        character[0].rotationSpeed = 5.5f;
 
         character[0].normalAttackTimeout = 1.5f;
         character[0].deadTimeout = 5;
