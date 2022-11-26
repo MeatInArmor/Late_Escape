@@ -18,9 +18,9 @@ public class Enemy : MonoBehaviour
     public float moveSpeed;                                             // множитель скорости передвижения
     public float moveDistance;                                          // до каких пор нужно двигаться к персонажу (минимальная дальность атаки)
 
-    public float distanceOfView = 15f;                                // дальность обзора (область нахождения персонажа)
-    [Range(0, 360)] public float angleOfView = 90f;                      // угол обзора
-    public float detectionDistance = 3f;                                // дальность абсолютного обнаружения
+    public float distanceOfView;                                        // дальность обзора (область нахождения персонажа)
+    [Range(0, 360)] public float angleOfView;                           // угол обзора
+    public float detectionDistance;                                     // дальность абсолютного обнаружения
 
     public Transform enemyEye;                                          // "глаз", из которого ведётся наблюдение
     public Transform target;                                            // цель, за которой следит
@@ -48,6 +48,7 @@ public class Enemy : MonoBehaviour
         agent.updateRotation = false;
         rotationSpeed = agent.angularSpeed;
         agentTransform = agent.transform;
+        DrawViewState();
     }
 
     private void Update()                                               // нахождение и перемещение к цели
@@ -55,7 +56,7 @@ public class Enemy : MonoBehaviour
         float distanceToPlayer = Vector3.Distance(target.transform.position, agent.transform.position);
         if (distanceToPlayer <= detectionDistance || IsInView())
         {
-            //RotateToTarget();
+            RotateToTarget();
             MoveToTarget();
         }
     }
@@ -66,7 +67,7 @@ public class Enemy : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(enemyEye.transform.position, target.position - enemyEye.position, out hit, distanceOfView))
         {
-            if (realAngle < angleOfView / 2f && Vector3.Distance(enemy.enemyEye.position, target.position) <= distanceOfView && hit.transform == target.transform)
+            if (realAngle < angleOfView / 2f && Vector3.Distance(enemyEye.position, target.position) <= distanceOfView /*&& hit.transform == target.transform*/)
             {
                 return true;
             }
@@ -96,8 +97,8 @@ public class Enemy : MonoBehaviour
     {
         Vector3 left = enemyEye.position + Quaternion.Euler(new Vector3(0, angleOfView / 2f, 0)) * (enemyEye.forward * distanceOfView);
         Vector3 right = enemyEye.position + Quaternion.Euler(-new Vector3(0, angleOfView / 2f, 0)) * (enemyEye.forward * distanceOfView);
-        Debug.DrawLine(enemyEye.position, left, Color.yellow);
-        Debug.DrawLine(enemyEye.position, right, Color.yellow);
+        Debug.DrawLine(enemyEye.position, left, Color.black);
+        Debug.DrawLine(enemyEye.position, right, Color.black);
     }
 
     private void Awake()
@@ -125,6 +126,10 @@ public class Enemy : MonoBehaviour
             maxHP = 10;
             currentHP = 10;
             deadTimeout = 5;
+
+            distanceOfView = 15f;
+            angleOfView = 90f;
+            detectionDistance = 2f;
 
             // сюда добавлять остальные характеристики
         }
