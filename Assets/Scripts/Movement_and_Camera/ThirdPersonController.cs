@@ -18,7 +18,7 @@ namespace StarterAssets
     {
         [Header("Movement")]
         [Tooltip("Скорость передвижения персонажа в м/с")]
-        public float MoveSpeed = 2.0f;                              // потом заменим на переменную из CharacterValues
+        public float MoveSpeed = 3.0f;                              // потом заменим на переменную из CharacterValues
 
         [Tooltip("Скорость бега персонажа в м/с (заменим на скорость передвижения в бою)")]
         public float SprintSpeed = 5.335f;                          // потом заменим на переменную из CharacterValues

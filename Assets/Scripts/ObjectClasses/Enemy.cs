@@ -28,8 +28,7 @@ public class Enemy : MonoBehaviour
 
     // для отслеживания игрока
     public Transform enemyEye;                                          // "глаз", из которого ведётся наблюдение
-    //public Transform target;                                            // цель, за которой следит
-    public GameObject target; 
+    public GameObject target;                                           // цель, за которой следит
     public float distanceToPlayer;
 
     // для следования за врагом
@@ -37,6 +36,7 @@ public class Enemy : MonoBehaviour
     private float rotationSpeed;                                        // скорость поворота
     private Transform agentTransform;                                   // для получения ссылки на объект
     private Vector3 direction;
+    private float stopDistance;                                         //для остановки после преследования
 
 
     //время выполнения способностей
@@ -71,6 +71,8 @@ public class Enemy : MonoBehaviour
         marker.gameObject.SetActive(false);                             // 
         selection.gameObject.SetActive(false);                          // делаем эти две штуки неактивными
 
+        inFight = false;
+        inAttackZone = false;
 
         //AssignAnimationIDs();
         SetCharacteristics();
@@ -82,29 +84,41 @@ public class Enemy : MonoBehaviour
         agent.updateRotation = false;
         rotationSpeed = agent.angularSpeed;
         agentTransform = agent.transform;
-        DrawViewState();
         target = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void Update()                                               // нахождение и перемещение к цели
     {
         distanceToPlayer = Vector3.Distance(target.transform.position, transform.position);
-       // if(inFight)
+        if(!inFight)
         {
             if (distanceToPlayer <= detectionDistance || IsInView())
             {
                 RotateToTarget();
                 MoveToTarget();
                 animator.SetFloat(_animIDSpeed, 5.335f);
-
+                inFight = true;
             }
             else
                 animator.SetFloat(_animIDSpeed, 0);
         }
-        //else
+        else
         {
-            
+            if (distanceToPlayer > attackDistance)
+            {
+                RotateToTarget();
+                MoveToTarget();
+            }
+            else inAttackZone = true;
+            if (inAttackZone) Attack();
         }
+    }
+
+    private void Attack()
+    {
+        //остановка
+        //атака
+        Dead();
     }
 
     private bool IsInView()                                             // true если цель видна
@@ -143,14 +157,6 @@ public class Enemy : MonoBehaviour
         agent.SetDestination(target.transform.position);
     }
 
-    private void DrawViewState()
-    {
-        Vector3 left = enemyEye.position + Quaternion.Euler(new Vector3(0, angleOfView / 2f, 0)) * (enemyEye.forward * distanceOfView);
-        Vector3 right = enemyEye.position + Quaternion.Euler(-new Vector3(0, angleOfView / 2f, 0)) * (enemyEye.forward * distanceOfView);
-        Debug.DrawLine(enemyEye.position, left, Color.black);
-        Debug.DrawLine(enemyEye.position, right, Color.black);
-    }
-
    
 
     private void SetCharacteristics()
@@ -165,7 +171,8 @@ public class Enemy : MonoBehaviour
 
             distanceOfView = 15f;
             angleOfView = 90f;
-            detectionDistance = 2f;
+            detectionDistance = 3f;
+            attackDistance = 3f;
 
             // сюда добавлять остальные характеристики
         }
@@ -177,7 +184,7 @@ public class Enemy : MonoBehaviour
 
             distanceOfView = 15f;
             angleOfView = 90f;
-            detectionDistance = 2f;
+            detectionDistance = 3f;
 
             // сюда добавлять остальные характеристики
         }
