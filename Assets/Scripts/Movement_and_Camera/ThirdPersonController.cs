@@ -191,7 +191,7 @@ namespace StarterAssets
         {
             if(_normalAttackTimeoutDelta > 0)                      // проверка, что атака ещё не закончена
             {                    
-                direction = CharacterValues.enemyCurrentTarget.transform.position - transform.position;
+                //direction = CharacterValues.enemyCurrentTarget.transform.position - transform.position;
                 Quaternion _rotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * CharacterValues.character[CharacterValues.currentTeamMember].rotationSpeed);
                 //Debug.Log(CharacterValues.canMove + " 1");

@@ -122,7 +122,7 @@ NavMeshSettings:
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: e63d040cd991bbf4ebdfac7feeb6c75e, type: 2}
 --- !u!1001 &2649645
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3364,6 +3364,10 @@ PrefabInstance:
       value: 859
       objectReference: {fileID: 0}
     - target: {fileID: 8764978134330426500, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
+      propertyPath: maxHP
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8764978134330426500, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
       propertyPath: target
       value: 
       objectReference: {fileID: 3893294199639930361}
@@ -3371,6 +3375,10 @@ PrefabInstance:
       propertyPath: enemyEye
       value: 
       objectReference: {fileID: 1898901543}
+    - target: {fileID: 8764978134330426500, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
+      propertyPath: currentHP
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e571234c0a80c94e9cf2568036e649a, type: 3}
 --- !u!1 &505939537
