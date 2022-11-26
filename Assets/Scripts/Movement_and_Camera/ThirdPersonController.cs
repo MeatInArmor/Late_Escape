@@ -190,11 +190,13 @@ namespace StarterAssets
         private void CanMoveCheck()
         {
             if(_normalAttackTimeoutDelta > 0)                      // проверка, что атака ещё не закончена
-            {                    
-                direction = CharacterValues.enemyCurrentTarget.transform.position - transform.position;
-                Quaternion _rotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * CharacterValues.character[CharacterValues.currentTeamMember].rotationSpeed);
-                //Debug.Log(CharacterValues.canMove + " 1");
+            {   if(CharacterValues.enemyCurrentTarget != null)
+                {
+                    direction = CharacterValues.enemyCurrentTarget.transform.position - transform.position;
+                    Quaternion _rotation = Quaternion.LookRotation(direction);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * CharacterValues.character[CharacterValues.currentTeamMember].rotationSpeed);
+                    //Debug.Log(CharacterValues.canMove + " 1");
+                }
                 _normalAttackTimeoutDelta -= Time.deltaTime;        // уменьшение оставшегося времени атаки (отнимается разница во времени с прошлой проверки)
                 if(_normalAttackTimeoutDelta <= 0)                  // если атака завершилась
                 {
@@ -244,8 +246,11 @@ namespace StarterAssets
             // надо усложнить рандомизацией урона и защитой врага
             enemy.currentHP -= CharacterValues.character[CharacterValues.currentTeamMember].damage;  // отнимаем его хп в количестве урона атаки 
             if(enemy.currentHP <= 0)                                             // если хп закончилось
-            // надо будет добавить анимацию смерти перед уничтожением
-            enemy.Dead();
+            {
+                enemy.Dead();
+                CharacterValues.enemyCurrentTarget = null;
+            }
+            
             //Destroy(enemy.gameObject);                                           // уничтожаем врага
             Debug.Log(enemy.currentHP);
             //Debug.Log(CharacterValues.enemyCurrentTarget);
