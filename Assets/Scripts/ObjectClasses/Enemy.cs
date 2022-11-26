@@ -18,16 +18,25 @@ public class Enemy : MonoBehaviour
     public float moveSpeed;                                             // множитель скорости передвижения
     public float moveDistance;                                          // до каких пор нужно двигаться к персонажу (минимальная дальность атаки)
 
+    public bool inFight;                                                // становится true, когда заметил игрока или получил урон
+    public bool inAttackZone;                                           // true, когда игрок в пределах attackDistance
+
+
     public float distanceOfView;                                        // дальность обзора (область нахождения персонажа)
     [Range(0, 360)] public float angleOfView;                           // угол обзора
-    public float detectionDistance;                                     // дальность абсолютного обнаружения
+    public float detectionDistance;                                     // дальность абсолютного обнаружения        // можно эту же переменную сделать как stopDistance 
 
+    // для отслеживания игрока
     public Transform enemyEye;                                          // "глаз", из которого ведётся наблюдение
-    public Transform target;                                            // цель, за которой следит
+    //public Transform target;                                            // цель, за которой следит
+    public GameObject target; 
+    public float distanceToPlayer;
 
+    // для следования за врагом
     private NavMeshAgent agent;                                         // передвижение + поиск пути
     private float rotationSpeed;                                        // скорость поворота
     private Transform agentTransform;                                   // для получения ссылки на объект
+    private Vector3 direction;
 
 
     //время выполнения способностей
@@ -36,6 +45,7 @@ public class Enemy : MonoBehaviour
     public float deadTimeout;                                          // время до уничтожения после поражения
     ////
 
+    // для определения самого врага
     public Enemy enemy;                                                 // Объект - враг
     private Marker marker;                                              // объект - выделение при наведении
     private Selection selection;                                        // объект - выделение цели атаки
@@ -51,16 +61,17 @@ public class Enemy : MonoBehaviour
 
  private void Awake()
     {
-
         //Выполняется для каждого враго по отдельности
         enemy = this.GetComponent<Enemy>();                             // запихиваем нашего врага впеременную
         marker = enemy.GetComponentInChildren<Marker>();                // круг наводки мышью
         selection = enemy.GetComponentInChildren<Selection>();          // круг выбора цели
 
-        animator = this.GetComponent<Animator>();
+        animator = this.GetComponent<Animator>();                       // запихиваем аниматор в переменную
 
         marker.gameObject.SetActive(false);                             // 
         selection.gameObject.SetActive(false);                          // делаем эти две штуки неактивными
+
+
         //AssignAnimationIDs();
         SetCharacteristics();
         AssignAnimationIDs();
@@ -72,29 +83,37 @@ public class Enemy : MonoBehaviour
         rotationSpeed = agent.angularSpeed;
         agentTransform = agent.transform;
         DrawViewState();
+        target = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void Update()                                               // нахождение и перемещение к цели
     {
-        float distanceToPlayer = Vector3.Distance(target.transform.position, agent.transform.position);
-        if (distanceToPlayer <= detectionDistance || IsInView())
+        distanceToPlayer = Vector3.Distance(target.transform.position, transform.position);
+       // if(inFight)
         {
-            RotateToTarget();
-            MoveToTarget();
-            animator.SetFloat(_animIDSpeed, 5.335f);
+            if (distanceToPlayer <= detectionDistance || IsInView())
+            {
+                RotateToTarget();
+                MoveToTarget();
+                animator.SetFloat(_animIDSpeed, 5.335f);
 
+            }
+            else
+                animator.SetFloat(_animIDSpeed, 0);
         }
-        else
-            animator.SetFloat(_animIDSpeed, 0);
+        //else
+        {
+            
+        }
     }
 
     private bool IsInView()                                             // true если цель видна
     {
-        float realAngle = Vector3.Angle(enemyEye.forward, target.position - enemyEye.position);
+        float realAngle = Vector3.Angle(enemyEye.forward, target.transform.position - enemyEye.position);
         RaycastHit hit;
-        if (Physics.Raycast(enemyEye.transform.position, target.position - enemyEye.position, out hit, distanceOfView))
+        if (Physics.Raycast(enemyEye.transform.position, target.transform.position - enemyEye.position, out hit, distanceOfView))
         {
-            if (realAngle < angleOfView / 2f && Vector3.Distance(enemyEye.position, target.position) <= distanceOfView /*&& hit.transform == target.transform*/)
+            if (realAngle < angleOfView / 2f && Vector3.Distance(enemyEye.position, target.transform.position) <= distanceOfView /*&& hit.transform == target.transform*/)
             {
                 return true;
             }
@@ -104,20 +123,24 @@ public class Enemy : MonoBehaviour
 
     private void RotateToTarget()                                       //поворот в сторону цели
     {
-        Vector3 lookVector = target.position - agentTransform.position;
-        lookVector.y = 0;
-        if (lookVector == Vector3.zero) return;
-        agentTransform.rotation = Quaternion.RotateTowards
-            (
-                agentTransform.rotation,
-                Quaternion.LookRotation(lookVector, Vector3.up),
-                rotationSpeed * Time.deltaTime
-            );
+        direction = target.transform.position - transform.position;
+        Quaternion _rotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Lerp(transform.rotation, _rotation, Time.deltaTime * rotationSpeed);
+
+        // Vector3 lookVector = target.transform.position - agentTransform.position;
+        // lookVector.y = 0;
+        // if (lookVector == Vector3.zero) return;
+        // agentTransform.rotation = Quaternion.RotateTowards
+        //     (
+        //         agentTransform.rotation,
+        //         Quaternion.LookRotation(lookVector, Vector3.up),
+        //         rotationSpeed * Time.deltaTime
+        //     );
     }
 
     private void MoveToTarget()
     {
-        agent.SetDestination(target.position);
+        agent.SetDestination(target.transform.position);
     }
 
     private void DrawViewState()

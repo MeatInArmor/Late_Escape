@@ -5799,6 +5799,7 @@ GameObject:
   - component: {fileID: 8764978134330426500}
   - component: {fileID: 3138367103043025649}
   - component: {fileID: 8793317959933726563}
+  - component: {fileID: 1812712922714579101}
   m_Layer: 0
   m_Name: DevilFarmer
   m_TagString: Untagged
@@ -5858,6 +5859,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39e90de516b9be04593020538224b819, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHP: 0
+  currentHP: 0
+  damage: 0
+  magicDammage: 0
+  deffence: 0
+  attackDistance: 0
+  isDefeated: 0
+  moveSpeed: 0
+  moveDistance: 0
+  distanceOfView: 0
+  angleOfView: 0
+  detectionDistance: 0
+  enemyEye: {fileID: 5684894836010697938}
+  target: {fileID: 0}
+  normalAttackTimeout: 0
+  magicCastTimeout: 0
+  deadTimeout: 0
+  enemy: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!136 &3138367103043025649
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5884,6 +5904,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a3354250bb69284eb3ed230c20b808f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!195 &1812712922714579101
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5021264095763930728}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &5074277335110221107
 GameObject:
   m_ObjectHideFlags: 0
