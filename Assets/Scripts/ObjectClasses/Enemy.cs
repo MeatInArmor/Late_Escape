@@ -42,6 +42,29 @@ public class Enemy : MonoBehaviour
     private Selection currentTarget;                                    // для текущей цели атаки (selection выбранный в данный момент)
     public Animator animator;
 
+    // animation IDs (установка переменных внутри аниматора)
+        private int _animIDAttack;                          
+        private int _animIDSpeed;
+        private int _animIDMotionSpeed;
+        private int _animIDDefeated;
+        private int _animIDCanMove;
+
+ private void Awake()
+    {
+
+        //Выполняется для каждого враго по отдельности
+        enemy = this.GetComponent<Enemy>();                             // запихиваем нашего врага впеременную
+        marker = enemy.GetComponentInChildren<Marker>();                // круг наводки мышью
+        selection = enemy.GetComponentInChildren<Selection>();          // круг выбора цели
+
+        animator = this.GetComponent<Animator>();
+
+        marker.gameObject.SetActive(false);                             // 
+        selection.gameObject.SetActive(false);                          // делаем эти две штуки неактивными
+        //AssignAnimationIDs();
+        SetCharacteristics();
+        AssignAnimationIDs();
+    }
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -58,7 +81,11 @@ public class Enemy : MonoBehaviour
         {
             RotateToTarget();
             MoveToTarget();
+            animator.SetFloat(_animIDSpeed, 5.335f);
+
         }
+        else
+            animator.SetFloat(_animIDSpeed, 0);
     }
 
     private bool IsInView()                                             // true если цель видна
@@ -101,21 +128,7 @@ public class Enemy : MonoBehaviour
         Debug.DrawLine(enemyEye.position, right, Color.black);
     }
 
-    private void Awake()
-    {
-
-        //Выполняется для каждого враго по отдельности
-        enemy = this.GetComponent<Enemy>();                             // запихиваем нашего врага впеременную
-        marker = enemy.GetComponentInChildren<Marker>();                // круг наводки мышью
-        selection = enemy.GetComponentInChildren<Selection>();          // круг выбора цели
-
-        animator = this.GetComponent<Animator>();
-
-        marker.gameObject.SetActive(false);                             // 
-        selection.gameObject.SetActive(false);                          // делаем эти две штуки неактивными
-        //AssignAnimationIDs();
-        SetCharacteristics();
-    }
+   
 
     private void SetCharacteristics()
     {
@@ -133,6 +146,19 @@ public class Enemy : MonoBehaviour
 
             // сюда добавлять остальные характеристики
         }
+        if (gameObject.GetComponent<HellWolf>())
+        {
+            maxHP = 20;
+            currentHP = 10;
+            deadTimeout = 5;
+
+            distanceOfView = 15f;
+            angleOfView = 90f;
+            detectionDistance = 2f;
+
+            // сюда добавлять остальные характеристики
+        }
+
     }
     private void OnMouseOver()                          // когда курсор вошёл в область колайдера (физической части) объекта 
     {
@@ -171,13 +197,13 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-    // private void AssignAnimationIDs()
-    //     {
-    //         _animIDAttack = Animator.StringToHash("Attack");
-    //         _animIDSpeed = Animator.StringToHash("Speed");
-    //         _animIDCanMove = Animator.StringToHash("CanMove");
-    //         _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
-    //     }
+    private void AssignAnimationIDs()
+        {
+            _animIDAttack = Animator.StringToHash("Attack");
+            _animIDSpeed = Animator.StringToHash("Speed");
+            _animIDCanMove = Animator.StringToHash("CanMove");
+            _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+        }
     public void Dead()
     {
         animator.SetTrigger("Defeated");
