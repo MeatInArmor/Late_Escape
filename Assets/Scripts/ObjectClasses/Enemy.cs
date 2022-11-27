@@ -20,6 +20,7 @@ public class Enemy : MonoBehaviour
 
     public bool inFight;                                                // становится true, когда заметил игрока или получил урон
     public bool inAttackZone;                                           // true, когда игрок в пределах attackDistance
+    public bool canMove;
 
 
     public float distanceOfView;                                        // дальность обзора (область нахождения персонажа)
@@ -53,13 +54,13 @@ public class Enemy : MonoBehaviour
     public Animator animator;
 
     // animation IDs (установка переменных внутри аниматора)
-        private int _animIDAttack;                          
-        private int _animIDSpeed;
-        private int _animIDMotionSpeed;
-        private int _animIDDefeated;
-        private int _animIDCanMove;
+    private int _animIDAttack;                          
+    private int _animIDSpeed;
+    private int _animIDMotionSpeed;
+    private int _animIDDefeated;
+    private int _animIDCanMove;
 
- private void Awake()
+    private void Awake()
     {
         //Выполняется для каждого враго по отдельности
         enemy = this.GetComponent<Enemy>();                             // запихиваем нашего врага впеременную
@@ -73,8 +74,8 @@ public class Enemy : MonoBehaviour
 
         inFight = false;
         inAttackZone = false;
+        canMove = true;
 
-        //AssignAnimationIDs();
         SetCharacteristics();
         AssignAnimationIDs();
     }
@@ -82,49 +83,68 @@ public class Enemy : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
-        rotationSpeed = agent.angularSpeed;
+        //rotationSpeed = agent.angularSpeed;                       // чтобы было плавнее укажем срвзу в характеристиках
         agentTransform = agent.transform;
-        target = GameObject.FindGameObjectWithTag("target");
+        target = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void FixedUpdate()                                               // нахождение и перемещение к цели
     {
         distanceToPlayer = Vector3.Distance(target.transform.position, transform.position);
-        if(!inFight)    //не замечен
+        //Debug.Log(inFight);
+        if(inFight)    // замечен
         {
-            if (distanceToPlayer <= detectionDistance || IsInView())
-            {
-                RotateToTarget();
-                MoveToTarget();
-                animator.SetFloat(_animIDSpeed, 5.335f);
-                inFight = true;
+            RotateToTarget();                                               // если враг заметил персонажа то в любом случае включаем поворот
+            if (distanceToPlayer <= detectionDistance /*|| IsInView()*/)    // если персонаж в зоне детекта
+            {                
+                //MoveToTarget();                                           // то НЕ двигаемся
+                animator.SetFloat(_animIDSpeed, 0f);                        // переходим в состояние покоя
+                //inFight = true;                                           //
+                inAttackZone = true;                                        // указываем что он не в бою, а в зоне атаки
+                StopMoving();                                               // насильно останавливаем, чтобы не добегал до позиции персонажа
+
             }
-            else
+
+            if(distanceToPlayer > attackDistance)                           // если персонаж вышел из зоны атаки (она больше зоны детекта)
             {
-                animator.SetFloat(_animIDSpeed, 0);
-                //inFight = false;
+                //animator.SetFloat(_animIDSpeed, 5f);                        // переход в состояние бега (сейчас он ппц резкий, нужно будет сделать плавный переход)
+                MoveToTarget();                                             // включаем движение
+                //inFight = false;                                          //
+                inAttackZone = false;                                       // выходим не из боя, а из зоны атаки
+            }
+
+            if(inAttackZone)                                                // если персонаж в зоне атаки
+            {
+                //canMove = false;                                          // запрещаем двигаться (разрешим после завершения атаки)
+                Attack();
             }
 
         }
-        else    //замечен
-        {
-            if (distanceToPlayer > attackDistance / 2)
-            {
-                RotateToTarget();
-                MoveToTarget();
-                inAttackZone = false;
-            }
-            else
-            {
-                inAttackZone = true;
-                Attack();
-            }
+        else    //не замечен
+        {   
+            if(IsInView() || distanceToPlayer < detectionDistance)              // если персонажа не заметили, то если IsInView() хотябы раз будет true или персонаж войдёт в зону видимости, 
+                inFight = true;                                                 // inFight станет true и больше не поменяется из за условий if else
+                                                                
+            // персонаж не замечен, враг ничего делать не должен
+
+            // if (distanceToPlayer > attackDistance / 2)
+            // {
+            //     RotateToTarget();
+            //     //MoveToTarget();                                           
+            //     inAttackZone = false;
+            // }
+            // else
+            // {
+            //     inAttackZone = true;
+            //     Attack();
+            // }
         }
     }
 
     private void Attack()
     {
-        //остановка
+        //остановка (уже есть)                    скорее нужна будет не остановка, а полный запрет движения во время атаки
+        //таймер до конца атаки
         //атака
         //Dead();
     }
@@ -162,10 +182,14 @@ public class Enemy : MonoBehaviour
 
     private void MoveToTarget()
     {
-        agent.SetDestination(target.transform.position);
+       agent.SetDestination(target.transform.position);         // враг толкал персонажа, потому что бежал конкретно ему под ноги
     }
 
-   
+    private void StopMoving()
+    {
+       agent.SetDestination(transform.position);                // здесь враг "бежит" себе под ноги ну и сразу останавливается
+    }
+
 
     private void SetCharacteristics()
     {
@@ -176,12 +200,14 @@ public class Enemy : MonoBehaviour
             maxHP = 10;
             currentHP = 10;
             deadTimeout = 5;
+            
 
             distanceOfView = 15;
             angleOfView = 90;
-            detectionDistance = 4;
+            detectionDistance = 2;
             attackDistance = 4;
-            stopDistance = 2;
+            //stopDistance = 2;                     // detectionDistance пока хватает
+            rotationSpeed = 7f;
 
             // сюда добавлять остальные характеристики
         }
@@ -191,9 +217,12 @@ public class Enemy : MonoBehaviour
             currentHP = 10;
             deadTimeout = 5;
 
-            distanceOfView = 15f;
-            angleOfView = 90f;
-            detectionDistance = 3f;
+            distanceOfView = 15;
+            angleOfView = 90;
+            detectionDistance = 2;
+            attackDistance = 4;
+            //stopDistance = 2;                     // detectionDistance пока хватает
+            rotationSpeed = 7f;
 
             // сюда добавлять остальные характеристики
         }
