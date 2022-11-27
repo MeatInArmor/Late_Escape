@@ -84,13 +84,13 @@ public class Enemy : MonoBehaviour
         agent.updateRotation = false;
         rotationSpeed = agent.angularSpeed;
         agentTransform = agent.transform;
-        target = GameObject.FindGameObjectWithTag("Player");
+        target = GameObject.FindGameObjectWithTag("target");
     }
 
-    private void Update()                                               // нахождение и перемещение к цели
+    private void FixedUpdate()                                               // нахождение и перемещение к цели
     {
         distanceToPlayer = Vector3.Distance(target.transform.position, transform.position);
-        if(!inFight)
+        if(!inFight)    //не замечен
         {
             if (distanceToPlayer <= detectionDistance || IsInView())
             {
@@ -100,17 +100,25 @@ public class Enemy : MonoBehaviour
                 inFight = true;
             }
             else
+            {
                 animator.SetFloat(_animIDSpeed, 0);
+                //inFight = false;
+            }
+
         }
-        else
+        else    //замечен
         {
-            if (distanceToPlayer > attackDistance)
+            if (distanceToPlayer > attackDistance / 2)
             {
                 RotateToTarget();
                 MoveToTarget();
+                inAttackZone = false;
             }
-            else inAttackZone = true;
-            if (inAttackZone) Attack();
+            else
+            {
+                inAttackZone = true;
+                Attack();
+            }
         }
     }
 
@@ -118,7 +126,7 @@ public class Enemy : MonoBehaviour
     {
         //остановка
         //атака
-        Dead();
+        //Dead();
     }
 
     private bool IsInView()                                             // true если цель видна
@@ -169,10 +177,11 @@ public class Enemy : MonoBehaviour
             currentHP = 10;
             deadTimeout = 5;
 
-            distanceOfView = 15f;
-            angleOfView = 90f;
-            detectionDistance = 3f;
-            attackDistance = 3f;
+            distanceOfView = 15;
+            angleOfView = 90;
+            detectionDistance = 4;
+            attackDistance = 4;
+            stopDistance = 2;
 
             // сюда добавлять остальные характеристики
         }
