@@ -44,6 +44,8 @@ public class Enemy : MonoBehaviour
     public float normalAttackTimeout;                                  // перезарядка обычной атаки
     public float magicCastTimeout;                                     // перезарядка магии
     public float deadTimeout;                                          // время до уничтожения после поражения
+
+    private float normalAttackTimeoutDelta;
     ////
 
     // для определения самого врага
@@ -83,26 +85,26 @@ public class Enemy : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
-        //rotationSpeed = agent.angularSpeed;                       // чтобы было плавнее укажем срвзу в характеристиках
         agentTransform = agent.transform;
         target = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void FixedUpdate()                                               // нахождение и перемещение к цели
     {
+        CanMoveCheck();
+        if (animator != null)
         distanceToPlayer = Vector3.Distance(target.transform.position, transform.position);
         //Debug.Log(inFight);
         if(inFight)    // замечен
         {
             RotateToTarget();                                               // если враг заметил персонажа то в любом случае включаем поворот
-            if (distanceToPlayer <= detectionDistance /*|| IsInView()*/)    // если персонаж в зоне детекта
+            if (distanceToPlayer <= detectionDistance)    // если персонаж в зоне детекта
             {                
                 //MoveToTarget();                                           // то НЕ двигаемся
                 animator.SetFloat(_animIDSpeed, 0f);                        // переходим в состояние покоя
                 //inFight = true;                                           //
                 inAttackZone = true;                                        // указываем что он не в бою, а в зоне атаки
                 StopMoving();                                               // насильно останавливаем, чтобы не добегал до позиции персонажа
-
             }
 
             if(distanceToPlayer > attackDistance)                           // если персонаж вышел из зоны атаки (она больше зоны детекта)
@@ -124,29 +126,66 @@ public class Enemy : MonoBehaviour
         {   
             if(IsInView() || distanceToPlayer < detectionDistance)              // если персонажа не заметили, то если IsInView() хотябы раз будет true или персонаж войдёт в зону видимости, 
                 inFight = true;                                                 // inFight станет true и больше не поменяется из за условий if else
-                                                                
-            // персонаж не замечен, враг ничего делать не должен
+        }
+    }
 
-            // if (distanceToPlayer > attackDistance / 2)
-            // {
-            //     RotateToTarget();
-            //     //MoveToTarget();                                           
-            //     inAttackZone = false;
-            // }
-            // else
-            // {
-            //     inAttackZone = true;
-            //     Attack();
-            // }
+    private void CanMoveCheck()
+    {
+        if (normalAttackTimeoutDelta > 0)                      // проверка, что атака ещё не закончена
+        {
+            normalAttackTimeoutDelta -= Time.deltaTime;        // уменьшение оставшегося времени атаки (отнимается разница во времени с прошлой проверки)
+            if (normalAttackTimeoutDelta <= 0)                 // если атака завершилась
+            {
+                //Debug.Log(CharacterValues.canMove + " 2");
+                CanMoveChanger();
+            }
+        }
+    }
+
+    private void CanMoveChanger()
+    {
+        if (normalAttackTimeoutDelta <= 0)                      // если конкретно атакака завершилась (потом добавится конкретно магия и прочее)
+        {
+            canMove = true;                     // разрешаем двигаться
+            animator.SetBool(_animIDCanMove, true);            // переключаем анимацию в аниматоре, изменяя значение преременной там
+            
         }
     }
 
     private void Attack()
     {
-        //остановка (уже есть)                    скорее нужна будет не остановка, а полный запрет движения во время атаки
-        //таймер до конца атаки
-        //атака
-        //Dead();
+        if (canMove)     // если может двигаться
+        {
+            canMove = false;                                // то он больше не может двигаться
+            //_animationBlend = 0;                                            // зануляем скорость изменение скорости движения 
+            animator.SetFloat(_animIDSpeed, 0);                            // зануляем саму скорость в аниматоре
+            animator.SetBool(_animIDCanMove, false);                       // запрещаем ходить в аниматоре
+            normalAttackTimeoutDelta = normalAttackTimeout;   // ставим длительность атаки равной КД атаки выбранного персонажа
+                                                                                                                            //Debug.Log(CharacterValues.character[CharacterValues.currentTeamMember].normalAttackTimeout);
+                                                                                                                            //Debug.Log(CharacterValues.currentTeamMember);
+            animator.SetTrigger("Attack");                                   // включаем анимацию атаки
+                                                                             //Debug.Log(CharacterValues.enemyCurrentTarget);
+
+            float time = normalAttackTimeout; // задержка перед непосредственно нанесением урона
+                                                                             //Debug.Log(time);
+                    Invoke("Hitting", time);                                 // отложенное исполнение функции Hitting
+        }
+    }
+
+    // Нанесение урона
+    public void Hitting()
+    {
+        // надо усложнить рандомизацией урона и защитой врага
+        CharacterValues.character[0].currentHP -= damage;  // отнимаем его хп в количестве урона атаки 
+        Debug.Log(CharacterValues.character[0].currentHP);
+        if (CharacterValues.character[0].currentHP <= 0)                                             // если хп закончилось
+        {
+           // Debug.Log(CharacterValues.character[0].currentHP);
+        }
+
+        //Destroy(enemy.gameObject);                                           // уничтожаем врага
+        //Debug.Log(CharacterValues.enemyCurrentTarget);
+        canMove = true;
     }
 
     private bool IsInView()                                             // true если цель видна
@@ -206,11 +245,12 @@ public class Enemy : MonoBehaviour
             angleOfView = 90;
             detectionDistance = 2;
             attackDistance = 4;
-            //stopDistance = 2;                     // detectionDistance пока хватает
-            rotationSpeed = 7f;
+            rotationSpeed = 7;
+            damage = 10;
+            normalAttackTimeout = 1.4f;
 
-            // сюда добавлять остальные характеристики
-        }
+    // сюда добавлять остальные характеристики
+}
         if (gameObject.GetComponent<HellWolf>())
         {
             maxHP = 20;
@@ -222,7 +262,7 @@ public class Enemy : MonoBehaviour
             detectionDistance = 2;
             attackDistance = 4;
             //stopDistance = 2;                     // detectionDistance пока хватает
-            rotationSpeed = 7f;
+            rotationSpeed = 7;
 
             // сюда добавлять остальные характеристики
         }
